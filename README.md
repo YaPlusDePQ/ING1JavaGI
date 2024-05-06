@@ -22,7 +22,7 @@
 # Le projet
 
 ## Info
-bas ptdr ya trop rien pour l'instant.
+Pour l'instant tout est sur teams
 
 ## Convention de code du projet
 
@@ -73,22 +73,22 @@ Voici la liste de tout ce qui doit être installé sur votre machine. Pour véri
 
 ## GitHub
 Le lien de la repositorie git est https://github.com/YaPlusDePQ/ING1JavaGI.<br />
-Une fois placé dans le dossier qui va accuillir le projet, éxécuter les commande suivante.
-```
+Une fois placé dans le dossier qui va accuillir le projet, éxécutez les commandes suivantes:
+```sh
 git init
 ```
-Puis utiliser la commande suivante pour créé un mot de référence à la repositorie pour les future commande Remplaces [nom] par ce que vous voulez.
-```
+Utilisez la commande suivante pour créé un mot de référence à la repositorie pour les futures commandes. Remplacez [nom] par ce que vous voulez.
+```sh
 git remote add [nom] https://github.com/YaPlusDePQ/ING1JavaGI.git
 ```
 Et enfin:
-```
+```sh
 git pull [nom] master
 ```
 (Il ce peut qu'il vous soit demander de vous login avec github)
 
 ## Makefile
-Dans le dossier du projet, créez un fichier qui s'appelle "makefile" (ATTENTION il ne doit avoir aucune extension) et copier collé ce code:
+Dans le dossier du projet, créez un fichier qui s'appelle "makefile" (ATTENTION il ne doit avoir aucune extension) et copier-coller ce code:
 ```makefile
 # Compiler
 JC = javac
@@ -118,10 +118,10 @@ all: $(CLASSES)
 clean:
 	$(RM) $(BINDIR)/*.class
 ```
-Vous pouvez modifier ce fichier à votre guise pour qu'il suivent vos besoin (ce fichier est ignoré par Git).
+Vous pouvez modifier ce fichier à votre guise pour qu'il suivent vos besoins (ce fichier est ignoré par Git).
 
 ### Java
-Une fois téléchargé éxécutez les deux premiers (les seules éxécutables) et complétez l'installation.
+Une fois téléchargés éxécutez les trois premiers (les seules éxécutables) et complétez l'installation, 
 puis éxécutez les commandes plus haut pour bien vérifiez que tout fonctionne. Si "javac" n'est pas reconnue après l'installation réalisez les étpaes suivantes:
 * Tapez "Modifier les variables d'environnement système" dans la barre de recherche Windows
 * Ouvrez l'interface et cliquez sur "Variables d'envirronement..." en bas a droite
