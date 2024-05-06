@@ -94,7 +94,7 @@ git remote add [nom] https://github.com/YaPlusDePQ/ING1JavaGI.git
 ```
 Et enfin:
 ```
-git pull master
+git pull [nom] master
 ```
 (Il ce peut qu'il vous soit demander de vous login avec github)
 
