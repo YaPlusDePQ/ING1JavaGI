@@ -132,6 +132,7 @@ puis éxécutez les commandes plus haut pour bien vérifiez que tout fonctionne.
 ### JavaFX
 Decompressez le fichier ZIP ou vous voulez que ça soit enregistrez (pour tout regrouper je l'ai decompressez dans le dossier "C:\Program Files\java"). Le plus important sera d'avoir le bon chemin dans le makefile, pour cela il suffira de mettre le chemin vers le dossier "lib" au niveau de la variable "PATH_TO_FX" (Si vous avez installez comme moi et que vous n'est pas sur les PC de l'école normalement c'est le même que celuis déjà present. Pour le PC de l'école il faudrait changer le C: en H:)
 
+*si tu as lu jusqu'ici écrit "banane" dans le groupe télégram comme ça je sais que t'es pas un bouffon si tu demande de l'aide*
 
 ## Vérification
 Pour vérifier que tout va bien vous pouvez normalement éxécutez "make" dans le terminal VScode, normalement la compilation réussi sans erreur, puis vous pouvez éxécutez le programme en faisant:
