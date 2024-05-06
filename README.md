@@ -67,20 +67,9 @@ bas ptdr ya trop rien pour l'instant.
 ## Installation:
 Voici la liste de tout ce qui doit être installé sur votre machine. Pour vérifié si ce n'est pas déjà installé vous pourrez taper la commande qui se trouve au bout de la ligne:
 * [Git](https://github.com/git-for-windows/git/releases/download/v2.45.0.windows.1/Git-2.45.0-64-bit.exe) pour vérifier l'installation: ``` git --version ```
+* [Make](https://gnuwin32.sourceforge.net/downlinks/make.php) pour vérifier l'installation: ``` make --version ```
 * [Java JDK](https://download.oracle.com/java/22/latest/jdk-22_windows-x64_bin.exe) pour vérifier l'installation: ``` javac -version ```
 * [JavaFX](https://download2.gluonhq.com/openjfx/22.0.1/openjfx-22.0.1_windows-x64_bin-sdk.zip) pas vérifiable simplement.
-
-### Java
-Une fois téléchargé éxécutez les deux premiers (les seules éxécutables) et complétez l'installation.
-puis éxécutez les commandes plus haut pour bien vérifiez que tout fonctionne. Si "javac" n'est pas reconnue après l'installation réalisez les étpaes suivantes:
-* Tapez "Modifier les variables d'environnement système" dans la barre de recherche Windows
-* Ouvrez l'interface et cliquez sur "Variables d'envirronement..." en bas a droite
-* Dans le tableau du bas cherchez "path" et double-cliquez
-* Cliquez sur "Nouveau" et copier le chemin absolue vers le dossier bin de la JDK (par exemple chez moi il se trouve à C:\Program Files\Java\jdk-22\bin)
-* Fermez le terminal de commande et rééxécutez "javac -version" (il ce peux qu'un redemarrage soit requis)
-
-### JavaFX
-Decompressez le fichier ZIP ou vous voulez que ça soit enregistrez (pour tout regrouper je l'ai decompressez dans le dossier "C:\Program Files\java"). Le plus important sera d'avoir le bon chemin dans le makefile, pour cela il suffira de mettre le chemin vers le dossier "lib" au niveau de la variable "PATH_TO_FX" (Si vous avez installez comme moi et que vous n'est pas sur les PC de l'école normalement c'est le même que celuis déjà present. Pour le PC de l'école il faudrait changer le C: en H:)
 
 ## GitHub
 Le lien de la repositorie git est https://github.com/YaPlusDePQ/ING1JavaGI.<br />
@@ -98,8 +87,54 @@ git pull [nom] master
 ```
 (Il ce peut qu'il vous soit demander de vous login avec github)
 
+## Makefile
+Dans le dossier du projet, créez un fichier qui s'appelle "makefile" (ATTENTION il ne doit avoir aucune extension) et copier collé ce code:
+```makefile
+# Compiler
+JC = javac
+
+# Dossiers source et de destination
+SRCDIR = src
+BINDIR = bin
+
+# Flags de compilation
+PATH_TO_FX := "C:/Program Files/Java/javafx-sdk-22.0.1/lib"
+JCFLAGS := -d $(BINDIR)/ -cp $(SRCDIR)/ --module-path $(PATH_TO_FX) --add-modules javafx.controls,javafx.fxml
+
+# Liste des fichiers source
+SOURCES := $(wildcard $(SRCDIR)/*.java)
+
+# Liste des fichiers class
+CLASSES := $(SOURCES:$(SRCDIR)/%.java=$(BINDIR)/%.class)
+
+# Commande pour construire les fichiers .class
+$(BINDIR)/%.class: $(SRCDIR)/%.java
+	$(JC) $(JCFLAGS) $<
+
+# Règle par défaut pour construire tous les fichiers .class
+all: $(CLASSES)
+
+# Nettoyer les fichiers générés
+clean:
+	$(RM) $(BINDIR)/*.class
+```
+Vous pouvez modifier ce fichier à votre guise pour qu'il suivent vos besoin (ce fichier est ignoré par Git).
+
+### Java
+Une fois téléchargé éxécutez les deux premiers (les seules éxécutables) et complétez l'installation.
+puis éxécutez les commandes plus haut pour bien vérifiez que tout fonctionne. Si "javac" n'est pas reconnue après l'installation réalisez les étpaes suivantes:
+* Tapez "Modifier les variables d'environnement système" dans la barre de recherche Windows
+* Ouvrez l'interface et cliquez sur "Variables d'envirronement..." en bas a droite
+* Dans le tableau du bas cherchez "path" et double-cliquez
+* Cliquez sur "Nouveau" et copier le chemin absolue vers le dossier bin de la JDK (par exemple chez moi il se trouve à C:\Program Files\Java\jdk-22\bin)
+* Fermez le terminal de commande et rééxécutez "javac -version" (il ce peux qu'un redemarrage soit requis)
+
+### JavaFX
+Decompressez le fichier ZIP ou vous voulez que ça soit enregistrez (pour tout regrouper je l'ai decompressez dans le dossier "C:\Program Files\java"). Le plus important sera d'avoir le bon chemin dans le makefile, pour cela il suffira de mettre le chemin vers le dossier "lib" au niveau de la variable "PATH_TO_FX" (Si vous avez installez comme moi et que vous n'est pas sur les PC de l'école normalement c'est le même que celuis déjà present. Pour le PC de l'école il faudrait changer le C: en H:)
+
+
 ## Vérification
-Pour vérifier que tout va bien vous pouvez normalement éxécutez "make" dans le terminal VScode (Si la commande make n'existe pas insatllez [ceci](https://gnuwin32.sourceforge.net/downlinks/make.php)), normalement la compilation réussi sans erreur, puis vous pouvez éxécutez le programme en faisant:
+Pour vérifier que tout va bien vous pouvez normalement éxécutez "make" dans le terminal VScode, normalement la compilation réussi sans erreur, puis vous pouvez éxécutez le programme en faisant:
 ```sh
 cd ./bin
 java --module-path "[Le chemin que vous avez mit pour PATH_TO_FX]" --add-modules javafx.controls,javafx.fxml HelloFX
