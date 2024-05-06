@@ -6,7 +6,7 @@ SRCDIR = src
 BINDIR = bin
 
 # Flags de compilation
-PATH_TO_FX := "C:/Program Files/Java/javafx-sdk-22.0.1/lib"
+PATH_TO_FX := ""
 JCFLAGS := -d $(BINDIR)/ -cp $(SRCDIR)/ --module-path $(PATH_TO_FX) --add-modules javafx.controls,javafx.fxml
 
 # Liste des fichiers source
