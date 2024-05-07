@@ -66,6 +66,7 @@ Voici la liste de tout ce qui doit être installé sur votre machine. Pour véri
 * [Make](https://gnuwin32.sourceforge.net/downlinks/make.php) pour vérifier l'installation: ``` make --version ```
 * [Java JDK](https://download.oracle.com/java/22/latest/jdk-22_windows-x64_bin.exe) pour vérifier l'installation: ``` javac -version ```
 * [JavaFX](https://download2.gluonhq.com/openjfx/22.0.1/openjfx-22.0.1_windows-x64_bin-sdk.zip) pas vérifiable simplement.
+  
 Une fois téléchargés éxécutez les trois premiers (les seules éxécutables) et complétez l'installation.
 
 ## GitHub
