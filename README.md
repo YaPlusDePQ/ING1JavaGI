@@ -37,10 +37,6 @@ Pour l'instant tout est sur teams
     * Les constantes sont strictement en majuscule.
     * Faites des noms claire pour vos fonction et variables, ça coute rien et c'est claire
     * **TABULATION À CHAQUE OUVERTURE DE {.**
-* Nomenclature (HTML et CSS):
-    * pas de majuscule
-    * les noms composés de plusieurs mot sont séparé par des '-'
-    * Tabulation a chaque ouverture de div
 * Commentaires
     * Commenter régulièrement le code (je sais c'est chiant mais c'est moins pire que le faire tout d'un coup).
     * Toutes les fonctions doivent posséder une description de la forme suivante:
