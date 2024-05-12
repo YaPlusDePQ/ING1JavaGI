@@ -37,10 +37,6 @@ Pour l'instant tout est sur teams
     * Les constantes sont strictement en majuscule.
     * Faites des noms claire pour vos fonction et variables, ça coute rien et c'est claire
     * **TABULATION À CHAQUE OUVERTURE DE {.**
-* Nomenclature (HTML et CSS):
-    * pas de majuscule
-    * les noms composés de plusieurs mot sont séparé par des '-'
-    * Tabulation a chaque ouverture de div
 * Commentaires
     * Commenter régulièrement le code (je sais c'est chiant mais c'est moins pire que le faire tout d'un coup).
     * Toutes les fonctions doivent posséder une description de la forme suivante:
@@ -70,6 +66,8 @@ Voici la liste de tout ce qui doit être installé sur votre machine. Pour véri
 * [Make](https://gnuwin32.sourceforge.net/downlinks/make.php) pour vérifier l'installation: ``` make --version ```
 * [Java JDK](https://download.oracle.com/java/22/latest/jdk-22_windows-x64_bin.exe) pour vérifier l'installation: ``` javac -version ```
 * [JavaFX](https://download2.gluonhq.com/openjfx/22.0.1/openjfx-22.0.1_windows-x64_bin-sdk.zip) pas vérifiable simplement.
+  
+Une fois téléchargés éxécutez les trois premiers (les seules éxécutables) et complétez l'installation.
 
 ## GitHub
 Le lien de la repositorie git est https://github.com/YaPlusDePQ/ING1JavaGI.<br />
@@ -121,8 +119,7 @@ clean:
 Vous pouvez modifier ce fichier à votre guise pour qu'il suivent vos besoins (ce fichier est ignoré par Git).
 
 ### Java
-Une fois téléchargés éxécutez les trois premiers (les seules éxécutables) et complétez l'installation, 
-puis éxécutez les commandes plus haut pour bien vérifiez que tout fonctionne. Si "javac" n'est pas reconnue après l'installation réalisez les étpaes suivantes:
+Si "javac" n'est pas reconnue après l'installation réalisez les étpaes suivantes:
 * Tapez "Modifier les variables d'environnement système" dans la barre de recherche Windows
 * Ouvrez l'interface et cliquez sur "Variables d'envirronement..." en bas a droite
 * Dans le tableau du bas cherchez "path" et double-cliquez
