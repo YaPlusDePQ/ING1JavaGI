@@ -19,17 +19,11 @@ public class Parser {
     }
 
     public static Boolean isValide(String text){
-        int open = 0;
-        int close = 0;
         String[] line = text.split("\n");
         List<String> tmp = new ArrayList<String>(Arrays.asList(line));
-        for(int i=0; i<tmp.size(); i++){
-            if (tmp.get(i) == "{"){
-                open++;
-            }else if (tmp.get(i) == "{"){
-                close++;
-            }        
-        }
+        long open = tmp.stream().filter(x->x.equals("{")).count();
+        long close = tmp.stream().filter(x->x.equals("}")).count();
+        
         if (close == open){
             return true;
         }
@@ -38,7 +32,7 @@ public class Parser {
         }
     }
 
-    
+
 
 
 }
