@@ -58,7 +58,7 @@ public class DrawingTab extends Group{
         }
         return null;
     }
-
+    
     /**
     * Set the cursor with the corresponding id as active, other are disabled.
     *
@@ -74,6 +74,32 @@ public class DrawingTab extends Group{
             }
         }
     }
+    
+    /**
+    * Add a new cursor in the list
+    *
+    * @param  id id for the cursor
+    * @param  xStart start position on the X axis
+    * @param  yStart start position on the Y axis
+    * @param  color start color, dont set the alpha setting here
+    * @param  opacity start opacity
+    * @param  thickness start thicness
+    * @param  active must be true if the cursor will be directly use to draw
+    */
+    public void addCursor(int id, double xStart, double yStart, Color color, double opacity, double thickness, boolean active){
+        this.cursorsList.add(new DrawingCursor(id,xStart, yStart, color, opacity, thickness, active));
+    }
+
+    /**
+    * Add a new cursor in the list
+    *
+    * @param  id id for the cursor
+    * @param  existingCursor cursor to copy the configuration from
+    * @param  active must be true if the cursor will be directly use to draw
+    */
+    public void addCursor(int id, DrawingCursor existingCursor, boolean active){
+        this.cursorsList.add(new DrawingCursor(id, existingCursor, active));
+    }
 
     /**
     * Remove a cursor from the list. This method only work if there is at least 2 cursors.
@@ -83,11 +109,11 @@ public class DrawingTab extends Group{
     */
     public void removeCursor(int cursorID){
         boolean setNewActive = false;
-
+        
         if(cursorsList.size() <= 1){
             return;
         }
-
+        
         for(int i=0; i<this.cursorsList.size(); i++){
             if(this.cursorsList.get(i).getID() == cursorID){
                 if(this.cursorsList.get(i).isActive()){
@@ -96,7 +122,7 @@ public class DrawingTab extends Group{
                 this.cursorsList.remove(i);
             }
         }
-
+        
         if(setNewActive){
             this.setActiveCursor(this.cursorsList.get(0).getID());
         }
@@ -136,7 +162,7 @@ public class DrawingTab extends Group{
         if(cursor == null){
             return;
         }
-
+        
         if(cursor.isActive()){
             this.configMainCanvasGC(cursor);
             this.mainCanvasGC.strokeLine(cursor.getOldX(), cursor.getOldY(), cursor.getCurrentX(), cursor.getCurrentY());

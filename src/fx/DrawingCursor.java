@@ -41,6 +41,25 @@ public class DrawingCursor {
         this.thickness = thickness;
         this.active = active;
     }
+
+    /**
+    * Constructor
+    *
+    * @param  id id for the cursor
+    * @param  existingCursor cursor to copy the configuration from
+    * @param  active must be true if the cursor will be directly use to draw
+    */
+    public DrawingCursor(int id, DrawingCursor existingCursor, boolean active){
+        this.id = id;
+        this.oldX = existingCursor.getOldX();
+        this.currentX = existingCursor.getCurrentX();
+        this.oldY = existingCursor.getOldY();
+         this.currentY = existingCursor.getCurrentY();;
+        this.color = existingCursor.getColor();;
+        this.opacity = existingCursor.getOpacity();;
+        this.thickness = existingCursor.getThickness();;
+        this.active = active;
+    }
     
     /**
     * Getter for id
