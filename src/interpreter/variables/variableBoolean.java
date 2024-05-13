@@ -1,8 +1,7 @@
 package interpreter.variables;
 
-public class VariableInt extends Variable{
-    
-    private Integer value;
+public class variableBoolean extends Variable{
+    private Boolean value;
 
     /**
     * Constructor
@@ -10,7 +9,7 @@ public class VariableInt extends Variable{
     * @param  name name for the variable
     * @param  value value for the variable
     */
-    public VariableInt(String name, Integer value){
+    public variableBoolean(String name, Boolean value){
         super(name);
         this.value = value;
     }
@@ -18,9 +17,9 @@ public class VariableInt extends Variable{
     /**
     * Getter for the value of the variable
     *
-    * @return return the value as an Integer
+    * @return return the value as a Boolean
     */
-    public Integer getValue(){
+    public Boolean getValue(){
         return value;
     }
 
@@ -29,12 +28,12 @@ public class VariableInt extends Variable{
     * @param  newValue new value
     *
     */
-    public void setValue(Integer newValue){
+    public void setValue(Boolean newValue){
         this.value = newValue;
     }
 
     @Override
     public String toString(){
-        return String.format("name:%s\n   value%d\n   type: Integer", this.getName(), this.value);
+        return String.format("name:%s\n   value%d\n   type: Boolean", this.getName(), this.value);
     }
 }
