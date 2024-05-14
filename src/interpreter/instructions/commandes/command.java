@@ -1,5 +1,5 @@
 package instructions.commandes;
 
-public class LookAt {
+public interface command{
 
 }
