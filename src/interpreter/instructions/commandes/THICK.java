@@ -5,12 +5,12 @@ import java.util.List;
 import fx.DrawingTab;
 import fx.DrawingCursor;
 
-import interpreter.Parser;
 import interpreter.variables.Variable;
-import interpreter.variables.VariableNumber;
+import interpreter.variables.VariableInt;
 import interpreter.variables.VariableString;
+import variables.VariableNumber;
 
-public class FWD extends command{
+public class THICK extends command{
 
     public static void execute(DrawingTab tab, List<Variable> args) throws incorrectArgument{
 
@@ -30,8 +30,6 @@ public class FWD extends command{
             if( ((String)args.get(0).getValue()).matches("([0-9]*\\.?[0-9]*) *%")){ // check if its a %, if not throw an error
 
                 finalValue = Parser.percentageToDouble((String)args.get(0).getValue()); //convert the value from a string to a number !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-                finalValue = tab.getWidth() > tab.getHeight() ? (finalValue)*tab.getWidth() : (finalValue)* tab.getHeight(); // it as to be a pourcentage of the biggest value between widht and height
             }
             else{
                 throw new incorrectArgument("parametre(s) incorrect(s)");
@@ -49,7 +47,7 @@ public class FWD extends command{
         //move each active cursors by the value
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
-                cursors.get(i).move(finalValue);
+                cursors.get(i).setThickness(finalValue);
             }
         }
 

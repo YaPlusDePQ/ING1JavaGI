@@ -49,10 +49,9 @@ public class BWD extends command{
         //move each active cursors by the value
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
-                cursors.get(i).Turn(180);   //reverse direction
-                cursors.get(i).move(finalValue);
+                cursors.get(i).move(-finalValue);
             }
         }
 
-    };
+    }
 }
