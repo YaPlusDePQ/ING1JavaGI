@@ -60,28 +60,4 @@ public class Parser {
         return text;
     }
 
-    /**
-    * Verify if the string is a number
-    *
-    * @return true if the string is a number and false if is not
-    */
-    
-    public static boolean isNumber(String s){
-        int value;
-
-        //try if the string is null 
-        if(s == null || s.equals("")){
-            return false;
-        }
-
-        //Try if its a number or not
-        try{
-            value = Integer.parseInt(s);
-            return true;
-        }catch(NumberFormatException e){
-            System.err.println("error");
-        }
-        return false;
-    }
-
 }

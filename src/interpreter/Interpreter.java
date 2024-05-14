@@ -5,7 +5,7 @@ import interpreter.variables.Variable;
 import interpreter.variables.VariableInt;
 import interpreter.variables.VariableString;
 import interpreter.variables.variableBoolean;
-import interpreter.*;
+import interpreter.Parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -170,7 +170,7 @@ public class Interpreter {
         List<String> tmp = new ArrayList<String>(Arrays.asList(arg));
         List<Variable> variable = new ArrayList<Variable>();
         for(String word : tmp){
-            if(isNumber(word)){
+            if(word.matches("-?\\d+")){
                 String name = "argInt" + i;
                 int value = Integer.parseInt(word);
                 VariableInt buffer = new VariableInt(name, value);
