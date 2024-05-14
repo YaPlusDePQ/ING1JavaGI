@@ -5,12 +5,12 @@ import java.util.List;
 import fx.DrawingTab;
 import fx.DrawingCursor;
 
-import interpreter.Parser;
 import interpreter.variables.Variable;
-import interpreter.variables.VariableNumber;
+import interpreter.variables.VariableInt;
 import interpreter.variables.VariableString;
+import variables.VariableNumber;
 
-public class FWD extends command{
+public class BWD extends command{
 
     public static void execute(DrawingTab tab, List<Variable> args) throws incorrectArgument{
 
@@ -49,6 +49,7 @@ public class FWD extends command{
         //move each active cursors by the value
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
+                cursors.get(i).Turn(180);   //reverse direction
                 cursors.get(i).move(finalValue);
             }
         }
