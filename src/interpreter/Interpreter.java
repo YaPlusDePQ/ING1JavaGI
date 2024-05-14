@@ -4,9 +4,12 @@ import fx.*;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableInt;
 import interpreter.variables.VariableString;
-import interpreter.variables.variableBoolean;
+import interpreter.variables.VariableBoolean;
 import interpreter.Parser;
+import interpreter.instructions.commandes.FWD;
+import interpreter.instructions.commandes.command;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -107,7 +110,7 @@ public class Interpreter {
     *
     * @return true if an instruction has been executed, false otherwise
     */
-    public boolean runNextInstruction() throws UnknowInstruction{
+    public boolean runNextInstruction() throws InstructionSyntaxError{
 
         //test if finished
         if(this.index >= this.parsedIntruction.size()){
@@ -142,21 +145,21 @@ public class Interpreter {
         System.out.println(String.format("[Interpreter] Instruction result (pre-traitement): NAME: '%s', ARG: '%s'", name, arguments));
 
         //Identification of instruction types
-
+        
         try{
             Class<?> cls = Class.forName(PATH_TO_COMMAND+name);
-            System.out.println("[Interpreter] instruction identified as COMMAND");
-
+            System.out.println("[Interpreter] instruction identified as "+cls.getName());
+            this.runCommand(cls, arguments);
         }
-        catch(ClassNotFoundException e){
-            throw new UnknowInstruction("[Interpreter] Instruction doesnt exist");
+        catch(Exception e){
+            System.out.println(e);
+            throw new InstructionSyntaxError("[Interpreter] Instruction doesnt exist");
         }
         
         this.index++;
         return true;
     }
 
-    
 
     /**
     * extract the argument of the string in impute
@@ -164,44 +167,18 @@ public class Interpreter {
     *  
     */
 
-    public void runCommand(String argument){
-        int i =0;
-        String[] arg = argument.split(",");
-        List<String> tmp = new ArrayList<String>(Arrays.asList(arg));
-        List<Variable> variable = new ArrayList<Variable>();
-        for(String word : tmp){
-            if(word.matches("-?\\d+")){
-                String name = "argInt" + i;
-                int value = Integer.parseInt(word);
-                VariableInt buffer = new VariableInt(name, value);
-                variable.set(i, buffer);
-            }
-            if(word.equals("true")){
-                String name = "argBool" + i;
-                variableBoolean buffer = new variableBoolean(name, true);
-                variable.set(i, buffer);
-            }
-            if(word.equals("false")){
-                String name = "argBool" + i;
-                variableBoolean buffer = new variableBoolean(name, false);
-                variable.set(i, buffer);
-            }
-            else{
-                Variable v = new Variable(word);
-                if (variables.contains(v)) {
-                    for (Variable j : variables){
-                        if (j.getName().equals(word)){
-                            variable.set(i, j);
-                        }
-                    }
-                }else{
-                    String name = "argString" + i;
-                    VariableString buffer = new VariableString(name, word);
-                    variable.set(i, buffer);
-                }
-            }
-            i++;
+    public void runCommand(Class<?> commandClass, String arguments) throws InstructionSyntaxError{
+        try{
+            Method m = commandClass.getMethod("execute", DrawingTab.class, List.class );
+  
+            m.invoke(null, this.parentTab, Parser.getValueFromArgument(arguments, this.variables)); 
+            this.parentTab.drawLine();
         }
+        catch (Exception e){
+            System.out.println(e);
+            throw new InstructionSyntaxError("Cannot reach class");
+        }
+
     }
     
     public String toString(){

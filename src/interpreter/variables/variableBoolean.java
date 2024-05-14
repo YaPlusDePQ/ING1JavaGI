@@ -1,6 +1,6 @@
 package interpreter.variables;
 
-public class variableBoolean extends Variable{
+public class VariableBoolean extends Variable{
     private Boolean value;
 
     /**
@@ -9,7 +9,7 @@ public class variableBoolean extends Variable{
     * @param  name name for the variable
     * @param  value value for the variable
     */
-    public variableBoolean(String name, Boolean value){
+    public VariableBoolean(String name, Boolean value){
         super(name);
         this.value = value;
     }

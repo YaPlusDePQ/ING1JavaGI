@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import interpreter.variables.*;
+
 /**
  * This class creazt a list of instruction by reading a text and transform it in a list.
  * 
@@ -46,18 +48,48 @@ public class Parser {
             text = text.replace(allMatches.get(i), "$"+i+"$");
         }
 
+        text = text.trim();
         text = text.replaceAll(" {1,}", " ");
         text = text.replaceAll(" *, *", ",");
-
-        if(text.charAt(0) == ' '){
-            text = text.replaceFirst(" ", "");
-        }
 
         for(int i=0; i<allMatches.size(); i++){
             text = text.replace("$"+i+"$", allMatches.get(i));
         }
 
         return text;
+    }
+
+    public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables) throws InstructionSyntaxError{
+        List<Variable> argumentList = new ArrayList<Variable>();
+
+        String[] rawArgumentsSplited = rawArguments.split(",");
+
+        for(int i=0; i<rawArgumentsSplited.length; i++){
+            
+            if( definedVariables.contains( new Variable(rawArgumentsSplited[i]) ) ){
+                argumentList.add( definedVariables.get( definedVariables.indexOf( new Variable(rawArgumentsSplited[i])  ) ) );
+            }
+            else{
+                if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
+                    argumentList.add( new VariableInt("",  (int)Double.parseDouble(rawArgumentsSplited[i])) );
+                }
+                else if(rawArgumentsSplited[i].matches("true|false")){
+                    argumentList.add( new VariableBoolean("", rawArgumentsSplited[i] == "true") );
+                }
+                else{ 
+                    StringBuilder sb = new StringBuilder(rawArgumentsSplited[i]);
+                    if(rawArgumentsSplited[i].matches("\"[^\"]*\"|'[^']*'")){
+                        sb.deleteCharAt(rawArgumentsSplited[i].length() - 1);
+                        sb.deleteCharAt(0);
+                    }
+                    argumentList.add( new VariableString("", sb.toString()));
+                }
+            }
+
+        }
+
+
+        return argumentList;
     }
 
 }
