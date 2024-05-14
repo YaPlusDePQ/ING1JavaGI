@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import interpreter.variables.*;
 
 /**
- * This class creazt a list of instruction by reading a text and transform it in a list.
+ * This class create a list of instruction by reading a text and transform it in a list.
  * 
  */
 
