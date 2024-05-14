@@ -34,6 +34,6 @@ public class VariableBoolean extends Variable{
 
     @Override
     public String toString(){
-        return String.format("name:%s\n   value%d\n   type: Boolean", this.getName(), this.value);
+        return String.format("[name: '%s'   value: %d   type: Boolean]", this.getName(), this.value);
     }
 }

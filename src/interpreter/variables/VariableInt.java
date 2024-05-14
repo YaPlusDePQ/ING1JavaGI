@@ -35,6 +35,6 @@ public class VariableInt extends Variable{
 
     @Override
     public String toString(){
-        return String.format("name:%s\n   value%d\n   type: Integer", this.getName(), this.value);
+        return String.format("[name: '%s'   value:%d   type: Integer]", this.getName(), this.value);
     }
 }

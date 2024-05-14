@@ -15,8 +15,8 @@ public class Paint2 extends Application{
     @Override
     public void start(Stage stage) {
         Group root = new Group();
-        Scene s = new Scene(root, 500, 500, Color.BLACK);
-        DrawingTab t = new DrawingTab(400,400);
+        Scene s = new Scene(root, 500, 500, Color.WHITE);
+        DrawingTab t = new DrawingTab(500,500);
 
         root.getChildren().add(t);
         stage.setScene(s);
@@ -31,32 +31,37 @@ public class Paint2 extends Application{
         c.move(50);
         t.drawLine();
 
+        c.setColor(Color.RED);
+
+        Interpreter test = new Interpreter(t,  "FWD 40\n    FWD 20%   ");
+        try{
+            test.runNextInstruction();
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        c.setColor(Color.PURPLE);
+
+
+        try{
+            test.runNextInstruction();
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        try{
+            test.runNextInstruction();
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
 
     }
     
     public static void main(String[] args) {
         launch();
-        Interpreter test = new Interpreter(null,  "CommandMov   arg1,   arg2   , \"   s<dfsdfqsdfqs df fs df\"\nsqdqsd   arg1.2,   arg2.3   , '  caca prout caca'");
-        try{
-            test.runNextInstruction();
-
-        }catch (Exception e){
-            System.out.println(e);
-        }
-
-        try{
-            test.runNextInstruction();
-
-        }catch (Exception e){
-            System.out.println(e);
-        }
-
-        try{
-            test.runNextInstruction();
-
-        }catch (Exception e){
-            System.out.println(e);
-        }
 
     }
 }

@@ -2,12 +2,6 @@ package interpreter;
 
 import fx.*;
 import interpreter.variables.Variable;
-import interpreter.variables.VariableInt;
-import interpreter.variables.VariableString;
-import interpreter.variables.VariableBoolean;
-import interpreter.Parser;
-import interpreter.instructions.commandes.FWD;
-import interpreter.instructions.commandes.command;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,7 +14,6 @@ import java.util.List;
 public class Interpreter {
     
     private DrawingTab parentTab; //DrawingTab where the Interpreter must execute on
-    private String rawInstruction; //String of all the instruction
     private List<String> parsedIntruction; //List of all the instructions
     private int index; //current index in parsedIntruction
     private List<Variable> variables; //list of all the variables declared
@@ -39,8 +32,6 @@ public class Interpreter {
     */
     public Interpreter(DrawingTab parentTab, String instructions){
         this.parentTab = parentTab;
-        this.rawInstruction = instructions;
-        
         this.parsedIntruction = Parser.getInstruction(instructions);
         this.index = 0;
         this.variables = new ArrayList<Variable>();
@@ -56,7 +47,6 @@ public class Interpreter {
     */
     public Interpreter(DrawingTab parentTab, String instructions, List<Variable> defaultDefinedVariables){
         this.parentTab = parentTab;
-        this.rawInstruction = instructions;
         this.parsedIntruction = Parser.getInstruction(instructions);
         this.index = 0;
         this.variables = new ArrayList<Variable>(defaultDefinedVariables);
@@ -86,7 +76,6 @@ public class Interpreter {
     * @param  instructions  String of all the instruction
     */
     public void reinitialize(String instructions){
-        this.rawInstruction = instructions;
         this.parsedIntruction = Parser.getInstruction(instructions);
         this.index = 0;
         this.variables = new ArrayList<Variable>();
@@ -99,7 +88,6 @@ public class Interpreter {
     * @param  defaultDefinedVariables  List of already defined variables
     */
     public void reinitialize(String instructions, List<Variable> defaultDefinedVariables){
-        this.rawInstruction = instructions;
         this.parsedIntruction = Parser.getInstruction(instructions);
         this.index = 0;
         this.variables = new ArrayList<Variable>(defaultDefinedVariables);
@@ -169,10 +157,15 @@ public class Interpreter {
 
     public void runCommand(Class<?> commandClass, String arguments) throws InstructionSyntaxError{
         try{
+            List<Variable> finalArguments = Parser.getValueFromArgument(arguments, this.variables);
+            System.out.println(String.format("[Interpreter] Instruction result (post-traitement): NAME: '%s', ARG: '%s'", commandClass.getName(), Arrays.toString(finalArguments.toArray())) );
+
             Method m = commandClass.getMethod("execute", DrawingTab.class, List.class );
-  
-            m.invoke(null, this.parentTab, Parser.getValueFromArgument(arguments, this.variables)); 
+            m.invoke(null, this.parentTab, finalArguments); 
+
             this.parentTab.drawLine();
+
+            System.out.println("[Interpreter] Instruction executed");
         }
         catch (Exception e){
             System.out.println(e);
