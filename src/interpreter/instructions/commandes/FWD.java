@@ -31,7 +31,7 @@ public class FWD extends command{
 
                 finalValue = Parser.percentageToDouble((String)args.get(0).getValue()); //convert the value from a string to a number !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                finalValue = tab.getWidth() > tab.getHeight() ? (finalValue)*tab.getWidth() : (finalValue/100)* tab.getHeight(); // its as to be a pourcentage of the biggest value between widht and height
+                finalValue = tab.getWidth() > tab.getHeight() ? (finalValue)*tab.getWidth() : (finalValue)* tab.getHeight(); // its as to be a pourcentage of the biggest value between widht and height
             }
             else{
                 throw new incorrectArgument("parametre(s) incorrect(s)");
