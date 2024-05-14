@@ -2,6 +2,9 @@ package interpreter;
 
 import fx.*;
 import interpreter.variables.Variable;
+import interpreter.variables.VariableInt;
+import interpreter.variables.VariableString;
+import interpreter.variables.variableBoolean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,10 +155,60 @@ public class Interpreter {
         return true;
     }
     
-    public void runCommand(){
+    public static boolean isNumber(String s){
+        int value;
 
+        if(s == null || s.equals("")){
+            return false;
+        }
+        try{
+            value = Integer.parseInt(s);
+            return true;
+        }catch(NumberFormatException e){
+            System.err.println("error");
+        }
+        return false;
     }
-    
+
+    public void runCommand(String argument){
+        int i =0;
+        String[] arg = argument.split(",");
+        List<String> tmp = new ArrayList<String>(Arrays.asList(arg));
+        List<Variable> variable = new ArrayList<Variable>();
+        for(String word : tmp){
+            if(isNumber(word)){
+                String name = "argInt" + i;
+                int value = Integer.parseInt(word);
+                VariableInt buffer = new VariableInt(name, value);
+                variable.set(i, buffer);
+            }
+            if(word.equals("true")){
+                String name = "argBool" + i;
+                variableBoolean buffer = new variableBoolean(name, true);
+                variable.set(i, buffer);
+            }
+            if(word.equals("false")){
+                String name = "argBool" + i;
+                variableBoolean buffer = new variableBoolean(name, false);
+                variable.set(i, buffer);
+            }
+            else{
+                Variable v = new Variable(word);
+                if (variables.contains(v)) {
+                    for (Variable j : variables){
+                        if (j.getName().equals(word)){
+                            variable.set(i, j);
+                        }
+                    }
+                }else{
+                    String name = "argString" + i;
+                    VariableString buffer = new VariableString(name, word);
+                    variable.set(i, buffer);
+                }
+            }
+            i++;
+        }
+    }
     
     public String toString(){
         return String.format("[Interpreter] CONFIGURATION: parsedIntruction.size = %d", this.parsedIntruction.size());
