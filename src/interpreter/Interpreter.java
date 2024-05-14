@@ -5,6 +5,7 @@ import interpreter.variables.Variable;
 import interpreter.variables.VariableInt;
 import interpreter.variables.VariableString;
 import interpreter.variables.variableBoolean;
+import interpreter.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -154,21 +155,14 @@ public class Interpreter {
         this.index++;
         return true;
     }
-    
-    public static boolean isNumber(String s){
-        int value;
 
-        if(s == null || s.equals("")){
-            return false;
-        }
-        try{
-            value = Integer.parseInt(s);
-            return true;
-        }catch(NumberFormatException e){
-            System.err.println("error");
-        }
-        return false;
-    }
+    
+
+    /**
+    * extract the argument of the string in impute
+    *
+    *  
+    */
 
     public void runCommand(String argument){
         int i =0;
