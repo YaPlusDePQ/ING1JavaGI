@@ -6,7 +6,7 @@ import fx.DrawingTab;
 import fx.DrawingCursor;
 
 import interpreter.variables.Variable;
-import interpreter.variables.VariableInt;
+import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
 
 public class FWD extends command{
@@ -21,8 +21,8 @@ public class FWD extends command{
 
         double finalValue = 0;
 
-        if(args.get(0) instanceof VariableInt){ //if the argument is a integer get the value
-            finalValue = ((Integer)args.get(0).getValue()).intValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+        if(args.get(0) instanceof VariableNumber){ //if the argument is a integer get the value
+            finalValue = (Double)args.get(0).getValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
         }
         else if(args.get(0) instanceof VariableString){ // if its a string
 

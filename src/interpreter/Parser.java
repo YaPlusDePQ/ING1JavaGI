@@ -71,7 +71,7 @@ public class Parser {
             }
             else{
                 if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
-                    argumentList.add( new VariableInt("",  (int)Double.parseDouble(rawArgumentsSplited[i])) );
+                    argumentList.add( new VariableNumber("",  Double.parseDouble(rawArgumentsSplited[i])) );
                 }
                 else if(rawArgumentsSplited[i].matches("true|false")){
                     argumentList.add( new VariableBoolean("", rawArgumentsSplited[i] == "true") );
