@@ -5,6 +5,8 @@ import javafx.scene.*;
 import javafx.scene.paint.*;
 import javafx.stage.Stage;
 
+import interpreter.Interpreter;
+
 /**
  * Main of the application
 */
@@ -34,5 +36,27 @@ public class Paint2 extends Application{
     
     public static void main(String[] args) {
         launch();
+        Interpreter test = new Interpreter(null,  "CommandMov   arg1,   arg2   , \"   s<dfsdfqsdfqs df fs df\"\nsqdqsd   arg1.2,   arg2.3   , '  caca prout caca'");
+        try{
+            test.runNextInstruction();
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        try{
+            test.runNextInstruction();
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        try{
+            test.runNextInstruction();
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
     }
 }

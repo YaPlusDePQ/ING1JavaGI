@@ -37,7 +37,7 @@ public class Parser {
     public static String cleanUpInstruction(String text){
 
         List<String> allMatches = new ArrayList<String>();
-        Matcher m = Pattern.compile("\"[^\"]*\"").matcher(text);
+        Matcher m = Pattern.compile("\"[^\"]*\"|'[^']*'").matcher(text);
         while (m.find()) {
             allMatches.add(m.group());
         }

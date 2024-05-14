@@ -1,5 +1,6 @@
 package fx;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +28,8 @@ public class DrawingTab extends Group{
         super();
         this.mainCanvas = new Canvas(width,height);
         this.mainCanvasGC = this.mainCanvas.getGraphicsContext2D();
-        this.cursorsList = Arrays.asList(new DrawingCursor(0, 0, 0, Color.web("rgb(0,0,255)"), 1, 1, true));
+        this.cursorsList = new ArrayList<DrawingCursor>();
+        this.cursorsList.add(new DrawingCursor(0, 0, 0, Color.web("rgb(0,0,255)"), 1, 1, true));
         
         
         //adding all the widget so they show up
