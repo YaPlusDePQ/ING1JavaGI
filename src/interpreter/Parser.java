@@ -92,7 +92,7 @@ public class Parser {
     }
 
     public static double percentageToDouble(String pourcentage){
-        return Double.valueOf(pourcentage.replace(" *", "").replace("%", ""));
+        return Double.valueOf(pourcentage.replace(" *", "").replace("%", "")).doubleValue()/100;
     }
 
 }
