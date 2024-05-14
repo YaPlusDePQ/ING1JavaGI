@@ -46,6 +46,6 @@ public class VariableNumber extends Variable{
 
     @Override
     public String toString(){
-        return String.format("[name: '%s'   value:%lf   type: Number]", this.getName(), this.value);
+        return String.format("[name: '%s'   value:%f   type: Number]", this.getName(), this.value);
     }
 }

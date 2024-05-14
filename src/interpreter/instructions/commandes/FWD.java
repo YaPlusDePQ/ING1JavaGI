@@ -22,7 +22,7 @@ public class FWD extends command{
         double finalValue = 0;
 
         if(args.get(0) instanceof VariableNumber){ //if the argument is a integer get the value
-            finalValue = (Double)args.get(0).getValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+            finalValue = (Double)(args.get(0).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
         }
         else if(args.get(0) instanceof VariableString){ // if its a string
 
