@@ -14,6 +14,8 @@ import javafx.scene.paint.*;
 */
 public class DrawingTab extends Group{
     
+    private double width;
+    private double height;
     private Canvas mainCanvas;
     private GraphicsContext mainCanvasGC;
     private List<DrawingCursor> cursorsList;
@@ -26,6 +28,8 @@ public class DrawingTab extends Group{
     */
     public DrawingTab(double width, double height){
         super();
+        this.width = width;
+        this.height = height;
         this.mainCanvas = new Canvas(width,height);
         this.mainCanvasGC = this.mainCanvas.getGraphicsContext2D();
         this.cursorsList = new ArrayList<DrawingCursor>();
@@ -34,6 +38,24 @@ public class DrawingTab extends Group{
         
         //adding all the widget so they show up
         this.getChildren().add(this.mainCanvas);
+    }
+
+    /**
+    * Get the width of the canvas
+    *
+    * @return width of the canvas
+    */
+    public double getWidth(){
+        return this.width;
+    }
+
+    /**
+    * Get the height of the canvas
+    *
+    * @return height of the canvas
+    */
+    public double getHeight(){
+        return this.height;
     }
     
     /**
