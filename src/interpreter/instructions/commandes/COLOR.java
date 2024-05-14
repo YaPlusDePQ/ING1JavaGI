@@ -26,6 +26,7 @@ public class COLOR extends command{
 
         if(args.get(0) instanceof VariableNumber){ //if the argument is a integer get the value
             valueRed = (Double)(args.get(0).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+            valueRed = (int)(valueRed*255);
         }
         else if(args.get(0) instanceof VariableString){ // if its a string
 
@@ -38,6 +39,7 @@ public class COLOR extends command{
         }
         if(args.get(1) instanceof VariableNumber){ //if the argument is a integer get the value
             valueGreen = (Double)(args.get(1).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+            valueGreen = (int)(valueGreen*255);
         }
         else if(args.get(1) instanceof VariableString){ // if its a string
 
@@ -50,6 +52,7 @@ public class COLOR extends command{
         }
         if(args.get(2) instanceof VariableNumber){ //if the argument is a integer get the value
             valueBlue = (Double)(args.get(2).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+            valueBlue = (int)(valueBlue*255);
         }
         else if(args.get(2) instanceof VariableString){ // if its a string
 
