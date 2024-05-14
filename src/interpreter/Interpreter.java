@@ -16,6 +16,8 @@ public class Interpreter {
     private List<String> parsedIntruction;
     private int index;
     private List<Variable> variables;
+    
+    private String PATH_TO_COMMAND = "instructions.commandes.";
 
     public Interpreter(DrawingTab parentTab, String instructions){
         this.parentTab = parentTab;
@@ -50,7 +52,7 @@ public class Interpreter {
 
 
     public void runNextInstruction() throws UnknowInstruction{
-
+        String currentInstruction = Parser.cleanUpInstruction(this.parsedIntruction.get(index));
 
 
         this.index++;
@@ -59,7 +61,7 @@ public class Interpreter {
     public void runCommand(String Instruction) throws ClassNotFoundException{
         List<String> currentInstruction = Arrays.asList(Instruction.split(" "));
 
-        String command = "interpreter.instruction.command."+currentInstruction.get(0);
+        String command = "."+currentInstruction.get(0);
         currentInstruction.remove(0);
         
         List<String> argumentsList = Arrays.asList(String.join(" ", currentInstruction).split(","));
