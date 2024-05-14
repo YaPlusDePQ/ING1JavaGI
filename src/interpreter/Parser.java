@@ -91,4 +91,8 @@ public class Parser {
         return argumentList;
     }
 
+    public static double percentageToDouble(String pourcentage){
+        return Double.valueOf(pourcentage.replace(" *", "").replace("%", ""));
+    }
+
 }

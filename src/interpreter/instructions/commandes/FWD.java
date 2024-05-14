@@ -5,6 +5,7 @@ import java.util.List;
 import fx.DrawingTab;
 import fx.DrawingCursor;
 
+import interpreter.Parser;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
@@ -28,8 +29,7 @@ public class FWD extends command{
 
             if( ((String)args.get(0).getValue()).matches("([0-9]*\\.?[0-9]*) *%")){ // check if its a %, if not throw an error
 
-                String pourcentageCleanedUp = ((String)args.get(0).getValue()).replace(" *", "").replace("%", ""); // keep only the number and not the %
-                finalValue = Double.valueOf(pourcentageCleanedUp); //convert the value from a string to a number
+                finalValue = Parser.percentageToDouble((String)args.get(0).getValue()); //convert the value from a string to a number !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 finalValue = tab.getWidth() > tab.getHeight() ? (finalValue/100)*tab.getWidth() : (finalValue/100)* tab.getHeight(); // its as to be a pourcentage of the biggest value between widht and height
             }
