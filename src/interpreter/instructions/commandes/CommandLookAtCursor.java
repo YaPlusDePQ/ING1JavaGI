@@ -1,6 +1,6 @@
-package instructions.commandes;
+package interpreter.instructions.commandes;
 
-public class CommandLookAtCursor implements LookAt{
+public class CommandLookAtCursor implements command{
     public void lookAt (){
 
     }
