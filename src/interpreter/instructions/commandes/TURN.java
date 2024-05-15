@@ -4,29 +4,26 @@ import java.util.List;
 
 import fx.DrawingCursor;
 import fx.DrawingTab;
+import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
-import variables.Variable;
-import variables.VariableString;
 
-public class CommandTurn implements command{
+
+public class TURN extends Command{
        
-     public static void execute(DrawingTab tab, List<Variable> args) throws incorrectArgument{
+     public static void execute(DrawingTab tab, List<Variable> args) throws IncorrectArgument{
     //check minimum number of argument required for the command
         if(args.size() != 1){
-            throw new incorrectArgument("parametre(s) incorrect(s)");
+            throw new IncorrectArgument("parametre(s) incorrect(s)");
         }
 
         double finalValue = 0;
 
         if(args.get(0) instanceof VariableNumber){ //if the argument is a integer get the value
-            finalValue = (Double)(args.get(0).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+            finalValue = ((VariableNumber)args.get(0)).getValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
         }
         else { // if its not an integer
-            throw new incorrectArgument("parametre(s) incorrect(s)");
-            }
+            throw new IncorrectArgument("parametre(s) incorrect(s)");
         }  
-
-        // after getting the finalValue correctly
 
         //getting all the cursors
         List<DrawingCursor> cursors = tab.getAllDrawingCursor();
@@ -34,7 +31,7 @@ public class CommandTurn implements command{
         //move each active cursors by the value
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
-                cursors.get(i).setDirection(finalValue);
+                cursors.get(i).setDirection(cursors.get(i).getDirection()+finalValue);
             }
         }
 

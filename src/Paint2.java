@@ -22,37 +22,10 @@ public class Paint2 extends Application{
         stage.setScene(s);
         stage.show();
 
-        DrawingCursor c = t.getDrawingCursor(0);
-
-        c.setXY(300,300);
-        t.drawLine();
-
-        c.setDirection(135);
-        c.move(50);
-        t.drawLine();
-
-        c.setColor(Color.RED);
-
-        Interpreter test = new Interpreter(t,  "FWD 40\n    FWD 20%   ");
-        try{
-            test.runNextInstruction();
-
-        }catch (Exception e){
-            System.out.println(e);
-        }
-
-        c.setColor(Color.PURPLE);
-
+        Interpreter test = new Interpreter(t,  "COLOR #FF0000 \n TURN 45\n FWD 300\n TURN 90\n COLOR #00FF00\n FWD 50\n COLOR #0000FF\n TURN -45\n THICK 5\n FWD 2% \n TURN 90\n BWD 50");
 
         try{
-            test.runNextInstruction();
-
-        }catch (Exception e){
-            System.out.println(e);
-        }
-
-        try{
-            test.runNextInstruction();
+            test.runAllInstructions();
 
         }catch (Exception e){
             System.out.println(e);

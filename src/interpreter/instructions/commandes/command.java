@@ -5,8 +5,8 @@ import interpreter.variables.Variable;
 import java.util.List;
 
 
-public class command {
-    public static void execute(DrawingTab tab, List<Variable> args) throws incorrectArgument{
+public class Command {
+    public static void execute(DrawingTab tab, List<Variable> args) throws IncorrectArgument{
         return;
     };
 }

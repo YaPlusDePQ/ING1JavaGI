@@ -139,9 +139,12 @@ public class Interpreter {
             System.out.println("[Interpreter] instruction identified as "+cls.getName());
             this.runCommand(cls, arguments);
         }
+        catch(InstructionSyntaxError e){
+            throw new InstructionSyntaxError("[Interpreter] parametre(s) incorrect(s)\n");
+        }
         catch(Exception e){
             System.out.println(e);
-            throw new InstructionSyntaxError("[Interpreter] Instruction doesnt exist");
+            throw new InstructionSyntaxError("[Interpreter] Instruction doesnt exist\n");
         }
         
         this.index++;
@@ -163,13 +166,20 @@ public class Interpreter {
             Method m = commandClass.getMethod("execute", DrawingTab.class, List.class );
             m.invoke(null, this.parentTab, finalArguments); 
 
-            this.parentTab.drawLine();
-
-            System.out.println("[Interpreter] Instruction executed");
+            System.out.println("[Interpreter] Instruction executed\n");
         }
         catch (Exception e){
-            System.out.println(e);
-            throw new InstructionSyntaxError("Cannot reach class");
+            throw new InstructionSyntaxError("Command exception as occured: "+e+"\n");
+        }
+
+    }
+
+    public void runAllInstructions() throws InstructionSyntaxError{
+        try{
+            while(this.runNextInstruction());
+
+        }catch(InstructionSyntaxError e){
+            throw new InstructionSyntaxError("[Interpreter] An error as occured during runtime: "+e);
         }
 
     }

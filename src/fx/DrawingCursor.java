@@ -112,7 +112,7 @@ public class DrawingCursor {
     * @return return the current direction in rad
     */
     public double getDirection(){
-        return this.direction;
+        return Math.toDegrees(this.direction);
     }
     
     /**

@@ -1,7 +1,7 @@
 package interpreter.instructions.commandes;
 
-public class incorrectArgument extends Exception {
-    public incorrectArgument(String errorMessage) {  
+public class IncorrectArgument extends Exception {
+    public IncorrectArgument(String errorMessage) {  
         super(errorMessage);  
     }
 }

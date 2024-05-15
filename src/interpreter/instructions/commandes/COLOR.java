@@ -7,73 +7,73 @@ import fx.DrawingCursor;
 import javafx.scene.paint.Color;
 
 import interpreter.variables.Variable;
-import interpreter.variables.VariableInt;
+import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
-import variables.VariableNumber;
 
-public class COLOR extends command{
-
-    public static void execute(DrawingTab tab, List<Variable> args) throws incorrectArgument{
-
-        //check minimum number of argument required for the command
-        if(args.size() != 3){
-            throw new incorrectArgument("parametre(s) incorrect(s)");
-        }
-
+public class COLOR extends Command{
+    
+    public static void execute(DrawingTab tab, List<Variable> args) throws IncorrectArgument{
+                
         double valueRed = 0;
         double valueGreen = 0;
         double valueBlue = 0;
-
-        if(args.get(0) instanceof VariableNumber){ //if the argument is a integer get the value
-            valueRed = (Double)(args.get(0).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
-            valueRed = (int)(valueRed*255);
-        }
-        else if(args.get(0) instanceof VariableString){ // if its a string
-
-            if( ((String)args.get(0).getValue()).matches("([0-2]*\\.?[0-5]*\\.?[0-5]*)")){ // check if its a number between 0 and 255 if not throw an error
-                valueRed = (int)(args.get(0).getValue());
-            }
-            else{
-                throw new incorrectArgument("parametre(s) incorrect(s)");
-            }
-        }
-        if(args.get(1) instanceof VariableNumber){ //if the argument is a integer get the value
-            valueGreen = (Double)(args.get(1).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
-            valueGreen = (int)(valueGreen*255);
-        }
-        else if(args.get(1) instanceof VariableString){ // if its a string
-
-            if( ((String)args.get(1).getValue()).matches("([0-2]*\\.?[0-5]*\\.?[0-5]*)")){ // check if its a number between 0 and 255 if not throw an error
-                valueGreen = (int)(args.get(1).getValue());
-            }
-            else{
-                throw new incorrectArgument("parametre(s) incorrect(s)");
-            }
-        }
-        if(args.get(2) instanceof VariableNumber){ //if the argument is a integer get the value
-            valueBlue = (Double)(args.get(2).getValue()); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
-            valueBlue = (int)(valueBlue*255);
-        }
-        else if(args.get(2) instanceof VariableString){ // if its a string
-
-            if( ((String)args.get(2).getValue()).matches("([0-2]*\\.?[0-5]*\\.?[0-5]*)")){ // check if its a number between 0 and 255 if not throw an error
-                valueBlue = (int)(args.get(2).getValue());
-            }
-            else{
-                throw new incorrectArgument("parametre(s) incorrect(s)");
-            }
-        }
-
-        // after getting the values correctly
-
-        //getting all the cursors
+        
         List<DrawingCursor> cursors = tab.getAllDrawingCursor();
-
-        //move each active cursors by the value
-        for(int i=0; i<cursors.size(); i++){
-            if(cursors.get(i).isActive()){
-                cursors.get(i).setColor(valueRed, valueGreen, valueBlue);
+        
+        //For the case of x,x,x as arguments (RGB)
+        if(args.size() == 3){
+            
+            //check type
+            if( !(args.get(0) instanceof VariableNumber) || !(args.get(1) instanceof VariableNumber) || !(args.get(2) instanceof VariableNumber)){
+                throw new IncorrectArgument("parametre(s) incorrect(s)");
             }
+
+
+            //getting values
+            valueRed = ((VariableNumber)(args.get(0))).getValue(); 
+            valueRed = valueRed*255;
+
+            valueGreen = ((VariableNumber)(args.get(1))).getValue();
+            valueGreen = valueGreen*255;
+
+            valueBlue = ((VariableNumber)(args.get(2))).getValue();
+            valueBlue = valueBlue*255;
+
+            //checking if the value are correct IE: RGB goes from 0- to 255
+            if(valueRed > 255 || valueRed < 0 || valueGreen > 255 || valueGreen < 0 || valueBlue > 255 || valueBlue < 0){
+                throw new IncorrectArgument("parametre(s) incorrect(s)");
+            }
+            
+            //apply the change
+            for(int i=0; i<cursors.size(); i++){
+                if(cursors.get(i).isActive()){
+                    cursors.get(i).setColor(Color.rgb((int)valueRed, (int)valueGreen, (int)valueBlue));
+                }
+            }
+
+        }
+        else if(args.size() == 1){ //For the case of #xxxxxx  as argument (HEX)
+            
+            //check type
+            if( !(args.get(0) instanceof VariableString) ){
+                throw new IncorrectArgument("parametre(s) incorrect(s)");
+            }
+
+            //checking if the value are correct IE: being a hex
+            if( !( (VariableString)args.get(0) ).getValue().matches("#([a-fA-F0-9]{6})") ){
+                throw new IncorrectArgument("parametre(s) incorrect(s)");
+            }
+
+            //apply the change
+            for(int i=0; i<cursors.size(); i++){
+                if(cursors.get(i).isActive()){
+                    cursors.get(i).setColor(Color.web( ((VariableString)args.get(0)).getValue() ));
+                }
+            }
+
+        }
+        else{
+            throw new IncorrectArgument("parametre(s) incorrect(s)");
         }
 
     }
