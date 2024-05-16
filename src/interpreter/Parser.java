@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.*;
 
 /**
@@ -59,7 +60,7 @@ public class Parser {
         return text;
     }
 
-    public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables) throws InstructionSyntaxError{
+    public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables){
         List<Variable> argumentList = new ArrayList<Variable>();
 
         String[] rawArgumentsSplited = rawArguments.split(",");

@@ -28,7 +28,7 @@ public class Paint2 extends Application{
             test.runAllInstructions();
 
         }catch (Exception e){
-            System.out.println(e);
+            System.out.println("\u001B[41m"+e+"\u001B[0m");
         }
 
     }

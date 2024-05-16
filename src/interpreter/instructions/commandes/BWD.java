@@ -8,15 +8,19 @@ import fx.DrawingCursor;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
+
 import interpreter.Parser;
+
+import interpreter.Exceptions.InvalidArgument;
+import interpreter.Exceptions.SyntaxError;
 
 public class BWD extends Command{
 
-    public static void execute(DrawingTab tab, List<Variable> args) throws IncorrectArgument{
+    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         //check minimum number of argument required for the command
         if(args.size() != 1){
-            throw new IncorrectArgument("parametre(s) incorrect(s)");
+            throw new SyntaxError("Need 1 argument");
         }
 
 
@@ -34,12 +38,12 @@ public class BWD extends Command{
                 finalValue = tab.getWidth() > tab.getHeight() ? (finalValue)*tab.getWidth() : (finalValue)* tab.getHeight(); // it as to be a pourcentage of the biggest value between widht and height
             }
             else{
-                throw new IncorrectArgument("parametre(s) incorrect(s)");
+                throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
             }
         }
         else{
-            throw new IncorrectArgument("parametre(s) incorrect(s)");
-        }  
+            throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
+        } 
 
         // after getting the finalValue correctly
 

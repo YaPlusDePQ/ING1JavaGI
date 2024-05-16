@@ -8,15 +8,19 @@ import fx.DrawingCursor;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
+
 import interpreter.Parser;
+
+import interpreter.Exceptions.InvalidArgument;
+import interpreter.Exceptions.SyntaxError;
 
 public class PRESS extends Command{
 
-    public static void execute(DrawingTab tab, List<Variable> args) throws IncorrectArgument{
+    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         //check minimum number of argument required for the command
         if(args.size() != 1){
-            throw new IncorrectArgument("parametre(s) incorrect(s)");
+            throw new SyntaxError("Need 1 argument");
         }
 
         List<DrawingCursor> cursors = tab.getAllDrawingCursor();
@@ -28,18 +32,18 @@ public class PRESS extends Command{
         else if(args.get(0) instanceof VariableString){ // if its a string
 
             if( !((VariableString)args.get(0)).getValue().matches("([0-9]*\\.?[0-9]*) *%")){ // check if its a %, if not throw an error
-                throw new IncorrectArgument("parametre(s) incorrect(s)");
+                throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
             }
 
             finalValue = Parser.percentageToDouble(((VariableString)args.get(0)).getValue()); //convert the value from a string to a number
         }
         else{
-            throw new IncorrectArgument("parametre(s) incorrect(s)");
+            throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
         }  
 
         // after getting the finalValue correctly
         if(finalValue > 1 || finalValue < 0){
-            throw new IncorrectArgument("parametre(s) incorrect(s)");
+            throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
         }
 
         //move each active cursors by the value

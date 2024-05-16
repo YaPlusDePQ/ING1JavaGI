@@ -1,18 +1,21 @@
 package interpreter.instructions.commandes;
 
 import java.util.List;
+import javafx.scene.paint.Color;
 
 import fx.DrawingTab;
 import fx.DrawingCursor;
-import javafx.scene.paint.Color;
 
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
 
+import interpreter.Exceptions.InvalidArgument;
+import interpreter.Exceptions.SyntaxError;
+
 public class COLOR extends Command{
     
-    public static void execute(DrawingTab tab, List<Variable> args) throws IncorrectArgument{
+    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError, InvalidArgument{
                 
         double valueRed = 0;
         double valueGreen = 0;
@@ -25,7 +28,7 @@ public class COLOR extends Command{
             
             //check type
             if( !(args.get(0) instanceof VariableNumber) || !(args.get(1) instanceof VariableNumber) || !(args.get(2) instanceof VariableNumber)){
-                throw new IncorrectArgument("parametre(s) incorrect(s)");
+                throw new InvalidArgument("Argument must be 3 numbers between 0 and 1 [Integer/Value] or hexadecimale code [String]");
             }
 
 
@@ -41,7 +44,7 @@ public class COLOR extends Command{
 
             //checking if the value are correct IE: RGB goes from 0- to 255
             if(valueRed > 255 || valueRed < 0 || valueGreen > 255 || valueGreen < 0 || valueBlue > 255 || valueBlue < 0){
-                throw new IncorrectArgument("parametre(s) incorrect(s)");
+                throw new InvalidArgument("Argument must be 3 numbers between 0 and 1 [Integer/Value] or hexadecimal code [String]");
             }
             
             //apply the change
@@ -56,12 +59,12 @@ public class COLOR extends Command{
             
             //check type
             if( !(args.get(0) instanceof VariableString) ){
-                throw new IncorrectArgument("parametre(s) incorrect(s)");
+                throw new InvalidArgument("Argument must be 3 numbers between 0 and 1 [Integer/Value] or 1 hexadecimal code [String]");
             }
 
             //checking if the value are correct IE: being a hex
             if( !( (VariableString)args.get(0) ).getValue().matches("#([a-fA-F0-9]{6})") ){
-                throw new IncorrectArgument("parametre(s) incorrect(s)");
+                throw new InvalidArgument("Argument must be 3 numbers between 0 and 1 [Integer/Value] or 1 hexadecimal code [String]");
             }
 
             //apply the change
@@ -73,7 +76,7 @@ public class COLOR extends Command{
 
         }
         else{
-            throw new IncorrectArgument("parametre(s) incorrect(s)");
+            throw new SyntaxError("Need 1 or 3 argument(s)");
         }
 
     }

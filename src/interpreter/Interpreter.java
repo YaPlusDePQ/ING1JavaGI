@@ -1,8 +1,11 @@
 package interpreter;
 
 import fx.*;
+import interpreter.Exceptions.InvalidArgument;
+import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.Variable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +101,7 @@ public class Interpreter {
     *
     * @return true if an instruction has been executed, false otherwise
     */
-    public boolean runNextInstruction() throws InstructionSyntaxError{
+    public boolean runNextInstruction() throws SyntaxError, InvalidArgument{
 
         //test if finished
         if(this.index >= this.parsedIntruction.size()){
@@ -139,12 +142,8 @@ public class Interpreter {
             System.out.println("[Interpreter] instruction identified as "+cls.getName());
             this.runCommand(cls, arguments);
         }
-        catch(InstructionSyntaxError e){
-            throw new InstructionSyntaxError("[Interpreter] parametre(s) incorrect(s)\n");
-        }
-        catch(Exception e){
-            System.out.println(e);
-            throw new InstructionSyntaxError("[Interpreter] Instruction doesnt exist\n");
+        catch(ClassNotFoundException e){
+            throw new SyntaxError("Instruction doesnt exist");
         }
         
         this.index++;
@@ -158,30 +157,32 @@ public class Interpreter {
     *  
     */
 
-    public void runCommand(Class<?> commandClass, String arguments) throws InstructionSyntaxError{
-        try{
-            List<Variable> finalArguments = Parser.getValueFromArgument(arguments, this.variables);
-            System.out.println(String.format("[Interpreter] Instruction result (post-traitement): NAME: '%s', ARG: '%s'", commandClass.getName(), Arrays.toString(finalArguments.toArray())) );
+    public void runCommand(Class<?> commandClass, String arguments) throws SyntaxError,InvalidArgument{
+        List<Variable> finalArguments = Parser.getValueFromArgument(arguments, this.variables);
+        System.out.println(String.format("[Interpreter] Instruction result (post-traitement): NAME: '%s', ARG: '%s'", commandClass.getName(), Arrays.toString(finalArguments.toArray())) );
 
+        try{
             Method m = commandClass.getMethod("execute", DrawingTab.class, List.class );
             m.invoke(null, this.parentTab, finalArguments); 
-
-            System.out.println("[Interpreter] Instruction executed\n");
+        }catch(NoSuchMethodException | IllegalAccessException | IllegalArgumentException e){
+            throw new SyntaxError("Command exist but cannot be access");
         }
-        catch (Exception e){
-            throw new InstructionSyntaxError("Command exception as occured: "+e+"\n");
+        catch(InvocationTargetException e){
+
+
+            if(e.getCause().getClass().equals(SyntaxError.class)){
+                throw (SyntaxError)e.getCause();
+            } 
+            else{
+                throw (InvalidArgument)e.getCause();
+            }
         }
 
+        System.out.println("[Interpreter] Instruction executed\n");
     }
 
-    public void runAllInstructions() throws InstructionSyntaxError{
-        try{
-            while(this.runNextInstruction());
-
-        }catch(InstructionSyntaxError e){
-            throw new InstructionSyntaxError("[Interpreter] An error as occured during runtime: "+e);
-        }
-
+    public void runAllInstructions() throws SyntaxError,InvalidArgument{
+        while(this.runNextInstruction());
     }
     
     public String toString(){
