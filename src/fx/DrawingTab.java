@@ -190,5 +190,38 @@ public class DrawingTab extends Group{
             this.mainCanvasGC.strokeLine(cursor.getOldX(), cursor.getOldY(), cursor.getCurrentX(), cursor.getCurrentY());
         }
     }
+
+
+
+    /**
+    * Draw a circle in the canvas from all active cursor. Its recommanded to only have one cursor active at a time.
+    *
+    * @param radius circle Radius
+    */
+    public void drawCricle(double radius){
+        for(DrawingCursor cursor : this.cursorsList){
+            if(cursor.isActive()){
+                this.configMainCanvasGC(cursor);
+                this.mainCanvasGC.strokeOval(cursor.getCurrentX()-radius, cursor.getCurrentY(), radius*2, radius*2);
+            }
+        }
+    }
     
+    /**
+    * Draw a line in the canvas from a specific active cursor.
+    *
+    * @param cursorID Id of the cursor
+    * @param radius circle Radius
+    */
+    public void drawCricle(int cursorID, double radius){
+        DrawingCursor cursor = this.getDrawingCursor(cursorID);
+        if(cursor == null){
+            return;
+        }
+        
+        if(cursor.isActive()){
+            this.configMainCanvasGC(cursor);
+            this.mainCanvasGC.strokeOval(cursor.getCurrentX()-radius, cursor.getCurrentY(), radius*2, radius*2);
+        }
+    }
 }   
