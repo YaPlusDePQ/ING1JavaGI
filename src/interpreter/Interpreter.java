@@ -176,8 +176,11 @@ public class Interpreter {
             if(e.getCause().getClass().equals(SyntaxError.class)){
                 throw (SyntaxError)e.getCause();
             } 
-            else{
+            else if(e.getCause().getClass().equals(InvalidArgument.class)){
                 throw (InvalidArgument)e.getCause();
+            }
+            else{
+                throw new InvalidArgument(e.getMessage());
             }
         }
 

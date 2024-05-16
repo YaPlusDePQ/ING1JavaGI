@@ -72,14 +72,14 @@ public class COLOR extends Command{
             }
 
             //checking if the value are correct IE: being a hex
-            if( !( (VariableString)args.get(0) ).getValue().matches("#([a-fA-F0-9]{6})") ){
+            if( !( (VariableString)args.get(0) ).getValue().replaceAll(" *", "").matches("#([a-fA-F0-9]{6})") ){
                 throw new InvalidArgument("Argument must be 3 numbers between 0 and 1 [Integer/Value] or 1 hexadecimal code (6 characters) [String]");
             }
 
             //apply the change
             for(int i=0; i<cursors.size(); i++){
                 if(cursors.get(i).isActive()){
-                    cursors.get(i).setColor(Color.web( ((VariableString)args.get(0)).getValue() ));
+                    cursors.get(i).setColor(Color.web( ((VariableString)args.get(0)).getValue().replaceAll(" *", "") ));
                 }
             }
 
