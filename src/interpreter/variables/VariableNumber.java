@@ -1,5 +1,8 @@
 package interpreter.variables;
 
+/**
+ * Store a Double value, can be converted to int
+ */
 public class VariableNumber extends Variable{
     
     private Double value;

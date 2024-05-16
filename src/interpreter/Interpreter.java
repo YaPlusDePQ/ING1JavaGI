@@ -152,24 +152,27 @@ public class Interpreter {
 
 
     /**
-    * extract the argument of the string in impute
-    *
-    *  
+    * Run a command instruction
     */
-
     public void runCommand(Class<?> commandClass, String arguments) throws SyntaxError,InvalidArgument{
+        //parse the argument to get theire respective value containt in Variables class
         List<Variable> finalArguments = Parser.getValueFromArgument(arguments, this.variables);
+
+
         System.out.println(String.format("[Interpreter] Instruction result (post-traitement): NAME: '%s', ARG: '%s'", commandClass.getName(), Arrays.toString(finalArguments.toArray())) );
 
         try{
+            //get the methode execute from the command sub class
             Method m = commandClass.getMethod("execute", DrawingTab.class, List.class );
+            //run
             m.invoke(null, this.parentTab, finalArguments); 
-        }catch(NoSuchMethodException | IllegalAccessException | IllegalArgumentException e){
+        }
+        catch(NoSuchMethodException | IllegalAccessException | IllegalArgumentException e){
+            //unknow error while accessing/trying to running the methode
             throw new SyntaxError("Command exist but cannot be access");
         }
         catch(InvocationTargetException e){
-
-
+            //handle excepted exception (wrong input)
             if(e.getCause().getClass().equals(SyntaxError.class)){
                 throw (SyntaxError)e.getCause();
             } 
@@ -181,6 +184,9 @@ public class Interpreter {
         System.out.println("[Interpreter] Instruction executed\n");
     }
 
+    /**
+    * Run all instructions
+    */
     public void runAllInstructions() throws SyntaxError,InvalidArgument{
         while(this.runNextInstruction());
     }

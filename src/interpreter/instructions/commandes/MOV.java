@@ -13,11 +13,19 @@ import interpreter.variables.VariableString;
 import interpreter.Exceptions.InvalidArgument;
 import interpreter.Exceptions.SyntaxError;
 
+/**
+ *  moves the cursor relatively (in pixels or %).
+*/
 public class MOV extends Command{
   
+    /**
+    * execute the command
+    *
+    * @param  tab DrawingTab object to execute the command in
+    * @param  args list of arguments send to the command
+    */
     public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
-       //check minimum number of argument required for the command
        if(args.size() != 2){
             throw new SyntaxError("Need 2 arguments");
         }
@@ -25,10 +33,10 @@ public class MOV extends Command{
         double valueX = 0;
         double valueY = 0;
 
-        if(args.get(0) instanceof VariableNumber && args.get(1) instanceof VariableNumber){ //if the argument is an integer get the value
-            valueX = ((VariableNumber)args.get(0)).getValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+        if(args.get(0) instanceof VariableNumber && args.get(1) instanceof VariableNumber){ 
+            valueX = ((VariableNumber)args.get(0)).getValue(); 
         }
-        else if(args.get(0) instanceof VariableString){ // if it's a string
+        else if(args.get(0) instanceof VariableString){ 
 
             if( !((VariableString)args.get(0)).getValue().matches("([0-9]*\\.?[0-9]*) *%") ){ // check if its a %, if not throw an error
                 throw new InvalidArgument("Arguments must be pourcentages [String] or numbers [Integer/Double]");
@@ -42,10 +50,10 @@ public class MOV extends Command{
             throw new InvalidArgument("Arguments must be pourcentages [String] or numbers [Integer/Double]");
         }
         
-        if(args.get(1) instanceof VariableNumber){ //if the argument is an integer get the value
-            valueY = ((VariableNumber)args.get(1)).getValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+        if(args.get(1) instanceof VariableNumber){ 
+            valueY = ((VariableNumber)args.get(1)).getValue();
         }
-        else if(args.get(1) instanceof VariableString){ // if it's a string
+        else if(args.get(1) instanceof VariableString){ 
 
             if( !((VariableString)args.get(1)).getValue().matches("([0-9]*\\.?[0-9]*) *%") ){ // check if its a %, if not throw an error
                 throw new InvalidArgument("Arguments must be pourcentages [String] or numbers [Integer/Double]");
@@ -61,7 +69,6 @@ public class MOV extends Command{
 
         // after getting the values correctly
 
-        //getting all the cursors
         List<DrawingCursor> cursors = tab.getAllDrawingCursor();
 
         //move each active cursors by the value

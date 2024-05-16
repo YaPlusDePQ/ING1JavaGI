@@ -14,27 +14,36 @@ import interpreter.Parser;
 import interpreter.Exceptions.InvalidArgument;
 import interpreter.Exceptions.SyntaxError;
 
+/**
+* move the cursor back relatively expressed in pixels
+* or percentage of the largest dimension of the drawing area. In
+* in both cases the value is a real value
+*/
 public class BWD extends Command{
-
+    
+    /**
+    * execute the command
+    *
+    * @param  tab DrawingTab object to execute the command in
+    * @param  args list of arguments send to the command
+    */
     public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
-
-        //check minimum number of argument required for the command
+        
         if(args.size() != 1){
             throw new SyntaxError("Need 1 argument");
         }
-
-
+        
         double finalValue = 0;
-
-        if(args.get(0) instanceof VariableNumber){ //if the argument is a integer get the value
-            finalValue = ((VariableNumber)args.get(0)).getValue(); //because getValue() return an object (No direct type) we need to cast it to an Integer to use it
+        
+        if(args.get(0) instanceof VariableNumber){
+            finalValue = ((VariableNumber)args.get(0)).getValue(); 
         }
-        else if(args.get(0) instanceof VariableString){ // if its a string
-
+        else if(args.get(0) instanceof VariableString){ // if its a %
+            
             if( ((VariableString)args.get(0)).getValue().matches("([0-9]*\\.?[0-9]*) *%")){ // check if its a %, if not throw an error
-
-                finalValue = Parser.percentageToDouble(((VariableString)args.get(0)).getValue()); //convert the value from a string to a number
-
+                
+                finalValue = Parser.percentageToDouble(((VariableString)args.get(0)).getValue()); //convert the value from a string to a double
+                
                 finalValue = tab.getWidth() > tab.getHeight() ? (finalValue)*tab.getWidth() : (finalValue)* tab.getHeight(); // it as to be a pourcentage of the biggest value between widht and height
             }
             else{
@@ -44,19 +53,18 @@ public class BWD extends Command{
         else{
             throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
         } 
-
+        
         // after getting the finalValue correctly
-
-        //getting all the cursors
+        
         List<DrawingCursor> cursors = tab.getAllDrawingCursor();
-
+        
         //move each active cursors by the value
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
                 cursors.get(i).move(-finalValue);
             }
         }
-
+        
         tab.drawLine();
     }
 }

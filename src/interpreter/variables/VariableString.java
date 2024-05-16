@@ -1,5 +1,8 @@
 package interpreter.variables;
 
+/**
+ * Store a String
+ */
 public class VariableString extends Variable{
     private String value;
 

@@ -1,5 +1,8 @@
 package interpreter.variables;
 
+/**
+ * Store a Boolean value
+ */
 public class VariableBoolean extends Variable{
     private Boolean value;
 
