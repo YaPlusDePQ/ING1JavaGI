@@ -16,6 +16,16 @@ public class VariableNumber extends Variable{
     }
 
     /**
+    * Constructor
+    *
+    * @param  value value for the variable
+    */
+    public VariableNumber(double value){
+        super("");
+        this.value = value;
+    }
+
+    /**
     * Getter for the value of the variable
     *
     * @return return the value as an Integer

@@ -15,6 +15,17 @@ public class VariableString extends Variable{
     }
 
     /**
+    * Constructor
+    *
+    * @param  value value for the variable
+    */
+    public VariableString(String value){
+        super("");
+        this.value = value;
+    }
+
+
+    /**
     * Getter for the value of the variable
     *
     * @return return the value as a String

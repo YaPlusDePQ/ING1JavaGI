@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.*;
 
 /**
@@ -72,10 +71,10 @@ public class Parser {
             }
             else{
                 if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
-                    argumentList.add( new VariableNumber("",  Double.parseDouble(rawArgumentsSplited[i])) );
+                    argumentList.add( new VariableNumber(Double.parseDouble(rawArgumentsSplited[i])) );
                 }
                 else if(rawArgumentsSplited[i].matches("true|false")){
-                    argumentList.add( new VariableBoolean("", rawArgumentsSplited[i] == "true") );
+                    argumentList.add( new VariableBoolean(rawArgumentsSplited[i] == "true") );
                 }
                 else{ 
                     StringBuilder sb = new StringBuilder(rawArgumentsSplited[i]);
@@ -83,7 +82,7 @@ public class Parser {
                         sb.deleteCharAt(rawArgumentsSplited[i].length() - 1);
                         sb.deleteCharAt(0);
                     }
-                    argumentList.add( new VariableString("", sb.toString()));
+                    argumentList.add( new VariableString(sb.toString()));
                 }
             }
 
