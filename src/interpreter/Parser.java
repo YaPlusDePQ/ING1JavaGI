@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.*;
 
 /**
@@ -53,31 +54,185 @@ public class Parser {
     */
     public static String cleanUpInstruction(String text){
         
-        //store each string so they arent impacted by the cleaning (store at the same time any element that will could interfere with the replacement token use)
-
-        //match all existing string (and any element that will could interfere with the replacement token used)
+        //store each string so they arent impacted by the cleaning 
+        
+        //match all existing string 
         List<String> allMatches = new ArrayList<String>();
-        Matcher m = Pattern.compile("\"[^\"]*\"|'[^']*'|\\$[0-9]{1,}\\$").matcher(text);
+        Matcher m = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))").matcher(text);
         while (m.find()) {
             allMatches.add(m.group());
         }
         
         //replace
         for(int i=0; i<allMatches.size(); i++){
-            text = text.replace(allMatches.get(i), "$"+i+"$");
+            text = text.replaceFirst(allMatches.get(i), "#"+i+"#");
+            
         }
         
         //cleaning up phase
         text = text.trim();
-        text = text.replaceAll(" {1,}", " ");
-        text = text.replaceAll(" *, *", ",");
+        String[] parts = text.split(" ", 2);
+        text = parts[0] + " " + parts[1].replaceAll(" ", "");
         
         //put original value back on
         for(int i=0; i<allMatches.size(); i++){
-            text = text.replace("$"+i+"$", allMatches.get(i));
+            text = text.replace("#"+i+"#", allMatches.get(i));
         }
         
         return text;
+    }
+    
+    /**
+    * Calculate a mathematique and/or boolean expression. (Must only containt number and operator)
+    * List of all operator: +,-,*,/,==,!=,<=,>=,!,<,>,&&,||
+    *
+    * @param expression Instruction
+    * @return resultat en Double
+    */
+    public static Double eval(String expression) throws NumberFormatException{
+        Double v1Buffer = 0.0;
+        Double v2Buffer = 0.0;
+        Pattern pattern;
+        Matcher matcher;
+        String subEvalBuffer;
+        
+        
+        //bracket first
+        pattern = Pattern.compile("\\([^\\)\\(]*\\)");
+        matcher = pattern.matcher(expression);
+        
+        while(matcher.find()){
+            subEvalBuffer = matcher.group(0);
+            expression = expression.replaceFirst(subEvalBuffer.replace("(", "\\(").replace(")", "\\)").replace("*", "\\*").replace("+", "\\+"), Parser.eval(subEvalBuffer.substring(1, subEvalBuffer.length()-1)).toString());
+            matcher = pattern.matcher(expression);
+        }
+        
+        // ! operator
+        pattern = Pattern.compile("!-{0,1}(\\d{1,}(\\.\\d{1,}){0,1})");
+        matcher = pattern.matcher(expression);
+        
+        while(matcher.find()){
+            subEvalBuffer = matcher.group(0);
+            v1Buffer = Double.valueOf(subEvalBuffer.split("!")[1]);
+            
+            expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer == 0 ? 1.0 : 0.0)).toString());
+            
+            matcher = pattern.matcher(expression);
+        }
+        
+        // * and /
+        pattern = Pattern.compile("(-{0,1}(\\d{1,}(\\.\\d{1,}){0,1})\\*-{0,1}(\\d{1,}(\\.\\d{1,}){0,1}))|(-{0,1}(\\d{1,}(\\.\\d{1,}){0,1})/-{0,1}(\\d{1,}(\\.\\d{1,}){0,1}))");
+        matcher = pattern.matcher(expression);
+        
+        while(matcher.find()){
+            subEvalBuffer = matcher.group(0);
+            
+            if(subEvalBuffer.split("\\*").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split("\\*")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("\\*")[1]);
+                expression = expression.replaceFirst(subEvalBuffer.replace("*", "\\*"), ((Double)(v1Buffer*v2Buffer)).toString());
+            }
+            else{
+                v1Buffer = Double.valueOf(subEvalBuffer.split("/")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("/")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer/v2Buffer)).toString());
+                
+            }
+            
+            matcher = pattern.matcher(expression);
+            
+        }
+        
+        // + and -
+        pattern = Pattern.compile("(-{0,1}(\\d+(\\.\\d+){0,1})\\+-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})--{0,1}(\\d+(\\.\\d+){0,1}))");
+        matcher = pattern.matcher(expression);
+        
+        while(matcher.find()){
+            
+            subEvalBuffer = matcher.group(0);
+            
+            if(subEvalBuffer.split("\\+").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split("\\+")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("\\+")[1]);
+                expression = expression.replaceFirst(subEvalBuffer.replace("+", "\\+"), ((Double)(v1Buffer+v2Buffer)).toString());
+            }
+            else{
+                v1Buffer = Double.valueOf(subEvalBuffer.split("-")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("-")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer-v2Buffer)).toString());
+                
+            }
+            
+            matcher = pattern.matcher(expression);
+            
+        }
+        
+        // ==, !=, <=, >=, <, >
+        pattern = Pattern.compile("(-{0,1}(\\d+(\\.\\d+){0,1})!=-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})==-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})>=-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})<=-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})>-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})<-{0,1}(\\d+(\\.\\d+){0,1}))");
+        matcher = pattern.matcher(expression);
+        
+        while(matcher.find()){
+            subEvalBuffer = matcher.group(0);
+            
+            if(subEvalBuffer.split("==").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split("==")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("==")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer==v2Buffer ? 1.0 : 0.0)).toString());
+            }
+            else if(subEvalBuffer.split("!=").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split("!=")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("!=")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer!=v2Buffer ? 1.0 : 0.0)).toString());
+            }
+            else if(subEvalBuffer.split(">=").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split(">=")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split(">=")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer>=v2Buffer ? 1.0 : 0.0)).toString());
+            }
+            else if(subEvalBuffer.split("<=").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split("<=")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("<=")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer<=v2Buffer ? 1.0 : 0.0)).toString());
+            }
+            else if(subEvalBuffer.split(">").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split(">")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split(">")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer>v2Buffer ? 1.0 : 0.0)).toString());
+            }
+            else {
+                v1Buffer = Double.valueOf(subEvalBuffer.split("<")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("<")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer<v2Buffer ? 1.0 : 0.0)).toString());
+            }
+            
+            matcher = pattern.matcher(expression);
+            
+        }
+        
+        // && and ||
+        pattern = Pattern.compile("(-{0,1}(\\d+(\\.\\d+){0,1})\\|\\|-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})&&-{0,1}(\\d+(\\.\\d+){0,1}))");
+        matcher = pattern.matcher(expression);
+        while(matcher.find()){
+            
+            subEvalBuffer = matcher.group(0);
+            
+            if(subEvalBuffer.split("\\|\\|").length == 2){
+                v1Buffer = Double.valueOf(subEvalBuffer.split("\\|\\|")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("\\|\\|")[1]);
+                expression = expression.replaceFirst(subEvalBuffer.replace("||", "\\|\\|"), ((Double)((v1Buffer != 0) || (v2Buffer != 0) ? 1.0 : 0.0)).toString() ) ;
+            }
+            else{
+                v1Buffer = Double.valueOf(subEvalBuffer.split("&&")[0]);
+                v2Buffer = Double.valueOf(subEvalBuffer.split("&&")[1]);
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)((v1Buffer != 0) && (v2Buffer != 0) ? 1.0 : 0.0)).toString());
+                
+            }
+            
+            matcher = pattern.matcher(expression);
+            
+        }
+        
+        return Double.valueOf(expression);
     }
     
     /**
@@ -87,37 +242,90 @@ public class Parser {
     * @param definedVariables List of all variables that are defined
     * @return List of all the value passed stored inside Variable sub class of the right type
     */
-    public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables){
+    public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables) throws SyntaxError{
         List<Variable> argumentList = new ArrayList<Variable>();
         
-        String[] rawArgumentsSplited = rawArguments.split(",");
+        List<String> allMatches = new ArrayList<String>();
+        Matcher m = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))|(#([a-fA-F0-9]{6}))|([0-9]*.?[0-9]*)%").matcher(rawArguments);
+
+        while (m.find()) {
+            allMatches.add(m.group());
+        }
         
-        for(int i=0; i<rawArgumentsSplited.length; i++){
-            
-            if( definedVariables.contains( new Variable(rawArgumentsSplited[i]) ) ){
-                //get the value if the argument is the name of a variable 
-                argumentList.add( definedVariables.get( definedVariables.indexOf( new Variable(rawArgumentsSplited[i])  ) ) );
+        //replace
+        for(int i=0; i<allMatches.size(); i++){
+            if( allMatches.get(i).charAt( allMatches.get(i).length()-1 ) == ','){
+                rawArguments = rawArguments.replaceFirst(allMatches.get(i), "#"+i+"#,");
+                allMatches.set(i, allMatches.get(i).substring(0, allMatches.get(i).length()-1));
             }
             else{
-                //number 
-                if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
-                    argumentList.add( new VariableNumber(Double.parseDouble(rawArgumentsSplited[i])) );
+                rawArguments = rawArguments.replaceFirst(allMatches.get(i), "#"+i+"#");
+            }
+            
+        }
+
+        Matcher variableMatcher;
+        variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(rawArguments);
+        int indexOfVariable = 0;
+        while (variableMatcher.find()) {
+
+            if(definedVariables.contains( new Variable(variableMatcher.group(0)) )){
+                
+                indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0)));
+                
+
+                if(definedVariables.get(indexOfVariable) instanceof VariableString){
+                    
+                    rawArguments = rawArguments.replaceFirst(definedVariables.get(indexOfVariable).getName(), "#"+allMatches.size()+"#");
+                    allMatches.add("\""+((VariableString)definedVariables.get(indexOfVariable)).getValue()+"\"");
                 }
-                //boolean
-                else if(rawArgumentsSplited[i].matches("true|false")){
-                    argumentList.add( new VariableBoolean(rawArgumentsSplited[i] == "true") );
-                }
-                //else while be treated as a String
-                else{ 
-                    StringBuilder sb = new StringBuilder(rawArgumentsSplited[i]);
-                    //remove quotes if necessary
-                    if(rawArgumentsSplited[i].matches("\"[^\"]*\"|'[^']*'")){
-                        sb.deleteCharAt(rawArgumentsSplited[i].length() - 1);
-                        sb.deleteCharAt(0);
-                    }
-                    argumentList.add( new VariableString(sb.toString()));
+                else{
+                    rawArguments = rawArguments.replaceFirst(definedVariables.get(indexOfVariable).getName(), definedVariables.get(indexOfVariable).getValue().toString());
                 }
             }
+            else{
+                throw new SyntaxError("Unknown variable: '"+variableMatcher.group(0)+"'");
+            }
+
+            variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(rawArguments);
+
+        }
+        
+        String[] rawArgumentsSplited = rawArguments.split(",");
+
+        for(int i=0; i<rawArgumentsSplited.length; i++){
+            
+            if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
+                argumentList.add( new VariableNumber(Double.parseDouble(rawArgumentsSplited[i])) );
+            }
+            //boolean
+            else if(rawArgumentsSplited[i].matches("true|false")){
+                argumentList.add( new VariableBoolean(rawArgumentsSplited[i] == "true") );
+            }
+            //string, hex and %
+            else if(rawArgumentsSplited[i].matches("#\\d+#")){ 
+
+                int value = Integer.valueOf(rawArgumentsSplited[i].substring(1, rawArgumentsSplited[i].length() - 1));
+                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("#"+value+"#", allMatches.get(value));
+
+                StringBuilder sb = new StringBuilder(rawArgumentsSplited[i]);
+                //remove quotes
+                if(!rawArgumentsSplited[i].matches("(#([a-fA-F0-9]{6}))|([0-9]*.?[0-9]*)%")){
+                    sb.deleteCharAt(rawArgumentsSplited[i].length() - 1);
+                    sb.deleteCharAt(0);
+                }
+                
+                argumentList.add( new VariableString(sb.toString()));
+            }
+            else{
+                try{
+                    argumentList.add( new VariableNumber(Parser.eval(rawArgumentsSplited[i])) );
+                }
+                catch(Exception e){
+                    throw new SyntaxError("Expression can't be evaluate. Please check for syntaxe error(s): '"+rawArgumentsSplited[i]+"'");
+                }
+            }
+            
             
         }
         
@@ -125,10 +333,10 @@ public class Parser {
     }
     
     /**
-     * Converte a string representing a % to the corresponding double.
-     * @param pourcentage
-     * @return value of the pourcentage
-     */
+    * Converte a string representing a % to the corresponding double.
+    * @param pourcentage
+    * @return value of the pourcentage
+    */
     public static double percentageToDouble(String pourcentage){
         return Double.valueOf(pourcentage.replace(" *", "").replace("%", "")).doubleValue()/100;
     }
