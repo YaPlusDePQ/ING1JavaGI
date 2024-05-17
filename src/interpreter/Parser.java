@@ -63,9 +63,10 @@ public class Parser {
             allMatches.add(m.group());
         }
         
+        text = text.replace("§", "\\§");
         //replace
         for(int i=0; i<allMatches.size(); i++){
-            text = text.replaceFirst(allMatches.get(i), "#"+i+"#");
+            text = text.replaceFirst(allMatches.get(i), "§"+i+"§");
             
         }
         
@@ -76,9 +77,10 @@ public class Parser {
         
         //put original value back on
         for(int i=0; i<allMatches.size(); i++){
-            text = text.replace("#"+i+"#", allMatches.get(i));
+            text = text.replace("§"+i+"§", allMatches.get(i));
         }
         
+        text = text.replace("\\§", "§");
         return text;
     }
     
@@ -246,6 +248,9 @@ public class Parser {
         List<Variable> argumentList = new ArrayList<Variable>();
         
         List<String> allMatches = new ArrayList<String>();
+        
+        rawArguments = rawArguments.replace("§", "\\§");
+
         Matcher m = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))|(#([a-fA-F0-9]{6}))|([0-9]*.?[0-9]*)%").matcher(rawArguments);
 
         while (m.find()) {
@@ -255,11 +260,11 @@ public class Parser {
         //replace
         for(int i=0; i<allMatches.size(); i++){
             if( allMatches.get(i).charAt( allMatches.get(i).length()-1 ) == ','){
-                rawArguments = rawArguments.replaceFirst(allMatches.get(i), "#"+i+"#,");
+                rawArguments = rawArguments.replaceFirst(allMatches.get(i), "§"+i+"§,");
                 allMatches.set(i, allMatches.get(i).substring(0, allMatches.get(i).length()-1));
             }
             else{
-                rawArguments = rawArguments.replaceFirst(allMatches.get(i), "#"+i+"#");
+                rawArguments = rawArguments.replaceFirst(allMatches.get(i), "§"+i+"§");
             }
             
         }
@@ -276,7 +281,7 @@ public class Parser {
 
                 if(definedVariables.get(indexOfVariable) instanceof VariableString){
                     
-                    rawArguments = rawArguments.replaceFirst(definedVariables.get(indexOfVariable).getName(), "#"+allMatches.size()+"#");
+                    rawArguments = rawArguments.replaceFirst(definedVariables.get(indexOfVariable).getName(), "§"+allMatches.size()+"§");
                     allMatches.add("\""+((VariableString)definedVariables.get(indexOfVariable)).getValue()+"\"");
                 }
                 else{
@@ -290,7 +295,7 @@ public class Parser {
             variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(rawArguments);
 
         }
-        
+
         String[] rawArgumentsSplited = rawArguments.split(",");
 
         for(int i=0; i<rawArgumentsSplited.length; i++){
@@ -303,10 +308,11 @@ public class Parser {
                 argumentList.add( new VariableBoolean(rawArgumentsSplited[i] == "true") );
             }
             //string, hex and %
-            else if(rawArgumentsSplited[i].matches("#\\d+#")){ 
-
+            else if(rawArgumentsSplited[i].matches("§\\d+§")){ 
+                
+                
                 int value = Integer.valueOf(rawArgumentsSplited[i].substring(1, rawArgumentsSplited[i].length() - 1));
-                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("#"+value+"#", allMatches.get(value));
+                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("§"+value+"§", allMatches.get(value)).replace("\\§", "§");
 
                 StringBuilder sb = new StringBuilder(rawArgumentsSplited[i]);
                 //remove quotes
@@ -318,6 +324,7 @@ public class Parser {
                 argumentList.add( new VariableString(sb.toString()));
             }
             else{
+                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("\\§", "§");
                 try{
                     argumentList.add( new VariableNumber(Parser.eval(rawArgumentsSplited[i])) );
                 }
