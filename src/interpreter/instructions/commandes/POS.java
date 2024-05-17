@@ -67,6 +67,8 @@ public class POS extends Command{
                 cursors.get(i).setXY(valueX, valueY);
             }
         }
+        
+        tab.drawLine();
 
     }
 }
