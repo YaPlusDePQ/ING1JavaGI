@@ -16,7 +16,9 @@ public class DrawingTab extends Group{
     private double width;
     private double height;
     private Canvas mainCanvas;
+    private Canvas cursorCanvas;
     private GraphicsContext mainCanvasGC;
+    private GraphicsContext cursorCanvasGC;
     private List<DrawingCursor> cursorsList;
     
     /**
@@ -30,15 +32,17 @@ public class DrawingTab extends Group{
         this.width = width;
         this.height = height;
         this.mainCanvas = new Canvas(width,height);
+        this.cursorCanvas = new Canvas(width,height);
         this.mainCanvasGC = this.mainCanvas.getGraphicsContext2D();
+        this.cursorCanvasGC = this.cursorCanvas.getGraphicsContext2D();
         this.cursorsList = new ArrayList<DrawingCursor>();
         this.cursorsList.add(new DrawingCursor(0, 0, 0, Color.web("rgb(0,0,255)"), 1, 1, true));
         
-        
         //adding all the widget so they show up
         this.getChildren().add(this.mainCanvas);
+        this.getChildren().add(this.cursorCanvas);
     }
-
+    
     /**
     * Get the width of the canvas
     *
@@ -47,7 +51,7 @@ public class DrawingTab extends Group{
     public double getWidth(){
         return this.width;
     }
-
+    
     /**
     * Get the height of the canvas
     *
@@ -89,10 +93,10 @@ public class DrawingTab extends Group{
     public void setActiveCursor(int cursorID){
         for(DrawingCursor cursor : this.cursorsList){
             if(cursor.getID() == cursorID){
-                cursor.setActiveStatus(true);
+                cursor.setActive(true);
             }
             else{
-                cursor.setActiveStatus(false);
+                cursor.setActive(false);
             }
         }
     }
@@ -111,7 +115,7 @@ public class DrawingTab extends Group{
     public void addCursor(int id, double xStart, double yStart, Color color, double opacity, double thickness, boolean active){
         this.cursorsList.add(new DrawingCursor(id,xStart, yStart, color, opacity, thickness, active));
     }
-
+    
     /**
     * Add a new cursor in the list
     *
@@ -122,7 +126,7 @@ public class DrawingTab extends Group{
     public void addCursor(int id, DrawingCursor existingCursor, boolean active){
         this.cursorsList.add(new DrawingCursor(id, existingCursor, active));
     }
-
+    
     /**
     * Remove a cursor from the list. This method only work if there is at least 2 cursors.
     * If the cursor removed was active, set the first cursor as the new active one.
@@ -166,12 +170,27 @@ public class DrawingTab extends Group{
     *
     */
     public void drawLine(){
+        this.cursorCanvasGC.clearRect(0, 0, this.cursorCanvas.getWidth(), this.cursorCanvas.getHeight());
+        
         for(DrawingCursor cursor : this.cursorsList){
             if(cursor.isActive()){
                 this.configMainCanvasGC(cursor);
                 this.mainCanvasGC.strokeLine(cursor.getOldX(), cursor.getOldY(), cursor.getCurrentX(), cursor.getCurrentY());
             }
         }
+        
+        for(DrawingCursor cursor : this.cursorsList){
+            if(cursor.isActive() && cursor.isVisible()){
+                this.cursorCanvasGC.setGlobalAlpha(1);
+                this.cursorCanvasGC.setStroke(Color.BLACK);
+                this.cursorCanvasGC.setLineWidth(1);
+                double Xs[] = {cursor.getCurrentX(), cursor.getCurrentX(), cursor.getCurrentX()+10};
+                double Ys[] = {cursor.getCurrentY(), cursor.getCurrentY()+10, cursor.getCurrentY()};
+                this.cursorCanvasGC.fillPolygon(Xs, Ys, 3);
+            }
+        }
+
+
     }
     
     /**
@@ -190,9 +209,9 @@ public class DrawingTab extends Group{
             this.mainCanvasGC.strokeLine(cursor.getOldX(), cursor.getOldY(), cursor.getCurrentX(), cursor.getCurrentY());
         }
     }
-
-
-
+    
+    
+    
     /**
     * Draw a circle in the canvas from all active cursor. Its recommanded to only have one cursor active at a time.
     *

@@ -19,6 +19,7 @@ public class DrawingCursor {
     private double opacity;
     private double thickness;
     private boolean active;
+    private boolean visible;
     // private boolean origin; 
     
     /**
@@ -40,6 +41,7 @@ public class DrawingCursor {
         this.opacity = opacity;
         this.thickness = thickness;
         this.active = active;
+        this.visible = true;
     }
 
     /**
@@ -59,6 +61,7 @@ public class DrawingCursor {
         this.opacity = existingCursor.getOpacity();;
         this.thickness = existingCursor.getThickness();;
         this.active = active;
+        this.visible = true;
     }
     
     /**
@@ -150,6 +153,16 @@ public class DrawingCursor {
     public boolean isActive(){
         return this.active;
     }
+
+    /**
+    * Getter for cursor
+    *
+    * @return return is the cursor is visible
+    */
+    public boolean isVisible(){
+        return this.visible;
+    }
+
     
     /**
     * Set the current X position
@@ -241,10 +254,18 @@ public class DrawingCursor {
     *
     * @param  status new status
     */
-    public void setActiveStatus(boolean status){
+    public void setActive(boolean status){
         this.active = status;
     }
     
+    /**
+    * Set the visible status of the cursor.
+    *
+    * @param  status new status
+    */
+    public void setVisible(boolean status){
+        this.visible = status;
+    }
     
     @Override
     public String toString(){
