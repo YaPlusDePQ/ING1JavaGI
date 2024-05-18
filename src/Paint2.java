@@ -1,3 +1,11 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
 import fx.*;
 
 import javafx.application.Application;
@@ -23,7 +31,20 @@ public class Paint2 extends Application{
         
         root.getChildren().add(t);
         
-        Interpreter test = new Interpreter(t,  "COLOR #FF0000 \n TURN 45\n FWD 300\n TURN 90\n COLOR '#00 FF00'\n FWD 50\n COLOR #0000FF\n TURN -45\n THICK 5\n FWD 2% \n TURN 90\n BWD 50\n CRICLE 10");
+        Interpreter test = new Interpreter(t, "");
+        
+        try {
+            File myObj = new File("C:\\Users\\alexr\\OneDrive\\Documents\\programmation\\java\\ING1\\script.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                test.addInstruction(data);
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
         
         Button b = new Button("button"); 
         
@@ -32,7 +53,7 @@ public class Paint2 extends Application{
             public void handle(ActionEvent e){ 
                 Thread thread = new Thread(()->{
                     try{
-                        test.runAllInstructions();
+                        test.runAllInstructions(100);
                         
                     }catch (Exception f){
                         System.out.println("\u001B[41m"+f+"\u001B[0m");

@@ -72,6 +72,13 @@ public class Interpreter {
     public List<Variable> getVariables(){
         return this.variables;
     }
+
+    public void addInstruction(String instructions){
+        List<String> pI = Parser.getInstruction(instructions);
+        for(int i=0; i<pI.size(); i++){
+            this.parsedIntruction.add(pI.get(i));
+        }
+    }
     
     /**
     * Reinitialize the interpretor with a new set of instruction
@@ -101,20 +108,20 @@ public class Interpreter {
     *
     * @return true if an instruction has been executed, false otherwise
     */
-    public boolean runNextInstruction() throws SyntaxError, InvalidArgument{
+    public int runNextInstruction() throws SyntaxError, InvalidArgument{
 
         //test if finished
         if(this.index >= this.parsedIntruction.size()){
             System.out.println("[Interpreter] No instruction remaining");
-            return false;
+            return 0;
         }
         
         //test if currently in a sub local space
         if(this.subFlow != null){
             System.out.println("[Interpreter] Running subFlow ...");
 
-            if(this.subFlow.runNextInstruction()){ 
-                return true;
+            if(this.subFlow.runNextInstruction() != 0){ 
+                return 1;
             }
             else{
                 //if sub local space finished if finished
@@ -125,6 +132,11 @@ public class Interpreter {
         }
         
         // Exctracting instruction structure
+        if(!this.parsedIntruction.get(index).matches("[A-Z]+.*")){
+            this.index++;
+            return 2;
+        }
+
         String currentInstruction = Parser.cleanUpInstruction(this.parsedIntruction.get(index));
         System.out.println(String.format("[Interpreter] Instruction: '%s'", currentInstruction));
 
@@ -147,7 +159,7 @@ public class Interpreter {
         }
         
         this.index++;
-        return true;
+        return 1;
     }
 
 
@@ -190,8 +202,14 @@ public class Interpreter {
     /**
     * Run all instructions
     */
-    public void runAllInstructions() throws SyntaxError,InvalidArgument{
-        while(this.runNextInstruction());
+    public void runAllInstructions(long millis) throws SyntaxError,InvalidArgument,InterruptedException{
+        int run = 1;
+        while(run != 0){
+            run = this.runNextInstruction();
+            if(run == 1){
+                Thread.sleep(millis);
+            }
+        }
     }
     
     public String toString(){

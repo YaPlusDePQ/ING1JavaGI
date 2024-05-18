@@ -63,6 +63,24 @@ public class DrawingCursor {
         this.active = active;
         this.visible = true;
     }
+
+    /**
+    * Constructor
+    *
+    * @param  id id for the cursor
+    */
+    public DrawingCursor(int id){
+        this.id = id;
+        this.oldX = 0;
+        this.currentX = 0;
+        this.oldY = 0;
+        this.currentY = 0;
+        this.color = Color.BLACK;
+        this.opacity = 1.0;
+        this.thickness = 1.0;
+        this.active = false;
+        this.visible = true;
+    }
     
     /**
     * Getter for id

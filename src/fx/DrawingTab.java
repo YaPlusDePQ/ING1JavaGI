@@ -36,9 +36,11 @@ public class DrawingTab extends Group{
         this.mainCanvasGC = this.mainCanvas.getGraphicsContext2D();
         this.cursorCanvasGC = this.cursorCanvas.getGraphicsContext2D();
         this.cursorsList = new ArrayList<DrawingCursor>();
-        this.cursorsList.add(new DrawingCursor(0, 0, 0, Color.web("rgb(0,0,255)"), 1, 1, true));
-        
+
+        this.cursorsList.add(new DrawingCursor(0));
+        this.setActiveCursor(0);
         //adding all the widget so they show up
+        
         this.getChildren().add(this.mainCanvas);
         this.getChildren().add(this.cursorCanvas);
     }
@@ -115,6 +117,15 @@ public class DrawingTab extends Group{
     public void addCursor(int id, double xStart, double yStart, Color color, double opacity, double thickness, boolean active){
         this.cursorsList.add(new DrawingCursor(id,xStart, yStart, color, opacity, thickness, active));
     }
+
+    /**
+    * Add a new cursor in the list
+    *
+    * @param  id id for the cursor
+    */
+    public void addCursor(int id){
+        this.cursorsList.add(new DrawingCursor(id));
+    }
     
     /**
     * Add a new cursor in the list
@@ -162,6 +173,7 @@ public class DrawingTab extends Group{
     public void configMainCanvasGC(DrawingCursor cursor){
         this.mainCanvasGC.setGlobalAlpha(cursor.getOpacity());
         this.mainCanvasGC.setStroke(cursor.getColor());
+        this.mainCanvasGC.setFill(cursor.getColor());
         this.mainCanvasGC.setLineWidth(cursor.getThickness());
     }
     
@@ -170,7 +182,6 @@ public class DrawingTab extends Group{
     *
     */
     public void drawLine(){
-        this.cursorCanvasGC.clearRect(0, 0, this.cursorCanvas.getWidth(), this.cursorCanvas.getHeight());
         
         for(DrawingCursor cursor : this.cursorsList){
             if(cursor.isActive()){
@@ -179,8 +190,15 @@ public class DrawingTab extends Group{
             }
         }
         
+        this.drawCursor();
+
+    }
+
+    public void drawCursor(){
+        this.cursorCanvasGC.clearRect(0, 0, this.cursorCanvas.getWidth(), this.cursorCanvas.getHeight());
+
         for(DrawingCursor cursor : this.cursorsList){
-            if(cursor.isActive() && cursor.isVisible()){
+            if(cursor.isVisible()){
                 this.cursorCanvasGC.setGlobalAlpha(1);
                 this.cursorCanvasGC.setStroke(Color.BLACK);
                 this.cursorCanvasGC.setLineWidth(1);
@@ -189,8 +207,6 @@ public class DrawingTab extends Group{
                 this.cursorCanvasGC.fillPolygon(Xs, Ys, 3);
             }
         }
-
-
     }
     
     /**
@@ -217,11 +233,16 @@ public class DrawingTab extends Group{
     *
     * @param radius circle Radius
     */
-    public void drawCricle(double radius){
+    public void drawCricle(double radius, boolean fill){
         for(DrawingCursor cursor : this.cursorsList){
             if(cursor.isActive()){
                 this.configMainCanvasGC(cursor);
-                this.mainCanvasGC.strokeOval(cursor.getCurrentX()-radius, cursor.getCurrentY(), radius*2, radius*2);
+                if(fill){
+                    this.mainCanvasGC.fillOval(cursor.getCurrentX()-radius, cursor.getCurrentY(), radius*2, radius*2);
+                }
+                else {
+                    this.mainCanvasGC.strokeOval(cursor.getCurrentX()-radius, cursor.getCurrentY(), radius*2, radius*2);
+                }
             }
         }
     }

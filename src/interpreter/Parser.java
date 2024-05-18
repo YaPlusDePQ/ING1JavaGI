@@ -22,6 +22,7 @@ public class Parser {
     */
     public static List<String> getInstruction(String text){
         String[] line = text.split("\n");
+        
         List<String> tmp = new ArrayList<String>(Arrays.asList(line));
         return tmp;
     }
@@ -54,7 +55,9 @@ public class Parser {
     */
     public static String cleanUpInstruction(String text){
         
-        //store each string so they arent impacted by the cleaning 
+        if(text.matches("[A-Z]+")){
+            return text+" ";
+        }
         
         //match all existing string 
         List<String> allMatches = new ArrayList<String>();
@@ -245,7 +248,14 @@ public class Parser {
     * @return List of all the value passed stored inside Variable sub class of the right type
     */
     public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables) throws SyntaxError{
+
+        
+
         List<Variable> argumentList = new ArrayList<Variable>();
+
+        if(rawArguments.length() == 0){
+            return argumentList;
+        }
         
         List<String> allMatches = new ArrayList<String>();
         
@@ -273,8 +283,12 @@ public class Parser {
         variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(rawArguments);
         int indexOfVariable = 0;
         while (variableMatcher.find()) {
+            
+            if(variableMatcher.group(0).matches("true|false")){
+                continue;
+            }
 
-            if(definedVariables.contains( new Variable(variableMatcher.group(0)) )){
+            if( definedVariables.contains( new Variable(variableMatcher.group(0)))){
                 
                 indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0)));
                 
@@ -299,13 +313,14 @@ public class Parser {
         String[] rawArgumentsSplited = rawArguments.split(",");
 
         for(int i=0; i<rawArgumentsSplited.length; i++){
+
             
             if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
                 argumentList.add( new VariableNumber(Double.parseDouble(rawArgumentsSplited[i])) );
             }
             //boolean
             else if(rawArgumentsSplited[i].matches("true|false")){
-                argumentList.add( new VariableBoolean(rawArgumentsSplited[i] == "true") );
+                argumentList.add( new VariableBoolean(rawArgumentsSplited[i].equals("true")) );
             }
             //string, hex and %
             else if(rawArgumentsSplited[i].matches("§\\d+§")){ 
