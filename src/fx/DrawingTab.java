@@ -200,7 +200,7 @@ public class DrawingTab extends Group{
         for(DrawingCursor cursor : this.cursorsList){
             if(cursor.isVisible()){
                 this.cursorCanvasGC.setGlobalAlpha(1);
-                this.cursorCanvasGC.setStroke(Color.BLACK);
+                this.cursorCanvasGC.setStroke(cursor.getColor());
                 this.cursorCanvasGC.setLineWidth(1);
                 double Xs[] = {cursor.getCurrentX(), cursor.getCurrentX(), cursor.getCurrentX()+10};
                 double Ys[] = {cursor.getCurrentY(), cursor.getCurrentY()+10, cursor.getCurrentY()};
