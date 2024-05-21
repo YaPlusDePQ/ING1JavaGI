@@ -1,5 +1,8 @@
 package interpreter.variables;
 
+/**
+ * Store a Boolean value
+ */
 public class VariableBoolean extends Variable{
     private Boolean value;
 
@@ -11,6 +14,16 @@ public class VariableBoolean extends Variable{
     */
     public VariableBoolean(String name, Boolean value){
         super(name);
+        this.value = value;
+    }
+
+    /**
+    * Constructor
+    *
+    * @param  value value for the variable
+    */
+    public VariableBoolean(Boolean value){
+        super("");
         this.value = value;
     }
 
@@ -34,6 +47,11 @@ public class VariableBoolean extends Variable{
 
     @Override
     public String toString(){
-        return String.format("[name: '%s'   value: %d   type: Boolean]", this.getName(), this.value);
+        if(this.getName() != ""){
+            return String.format("[name: '%s'   value: %d   type: Boolean]", this.getName(), this.value);
+
+        }else{
+            return String.format("[value: %d   type: Boolean]", this.value);
+        }
     }
 }

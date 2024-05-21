@@ -1,5 +1,8 @@
 package interpreter.variables;
 
+/**
+ * Store a Double value, can be converted to int
+ */
 public class VariableNumber extends Variable{
     
     private Double value;
@@ -12,6 +15,16 @@ public class VariableNumber extends Variable{
     */
     public VariableNumber(String name, double value){
         super(name);
+        this.value = value;
+    }
+
+    /**
+    * Constructor
+    *
+    * @param  value value for the variable
+    */
+    public VariableNumber(double value){
+        super("");
         this.value = value;
     }
 
@@ -46,6 +59,11 @@ public class VariableNumber extends Variable{
 
     @Override
     public String toString(){
-        return String.format("[name: '%s'   value:%f   type: Number]", this.getName(), this.value);
+        if(this.getName() != ""){
+            return String.format("[name: '%s'   value: %f   type: Number]", this.getName(), this.value);
+
+        }else{
+            return String.format("[value: %f   type: Number]", this.value);
+        }
     }
 }

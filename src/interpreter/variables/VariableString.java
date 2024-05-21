@@ -1,5 +1,8 @@
 package interpreter.variables;
 
+/**
+ * Store a String
+ */
 public class VariableString extends Variable{
     private String value;
 
@@ -13,6 +16,17 @@ public class VariableString extends Variable{
         super(name);
         this.value = value;
     }
+
+    /**
+    * Constructor
+    *
+    * @param  value value for the variable
+    */
+    public VariableString(String value){
+        super("");
+        this.value = value;
+    }
+
 
     /**
     * Getter for the value of the variable
@@ -34,6 +48,11 @@ public class VariableString extends Variable{
 
     @Override
     public String toString(){
-        return String.format("[name: '%s'   value:'%s'   type: String]", this.getName(), this.value);
+        if(this.getName() != ""){
+            return String.format("[name: '%s'   value: %s   type: String]", this.getName(), this.value);
+
+        }else{
+            return String.format("[value: %s   type: String]", this.value);
+        }
     }
 }
