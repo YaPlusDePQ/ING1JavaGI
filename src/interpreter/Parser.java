@@ -113,7 +113,7 @@ public class Parser {
         }
         
         // ! operator
-        pattern = Pattern.compile("!-{0,1}(\\d{1,}(\\.\\d{1,}){0,1})");
+        pattern = Pattern.compile("!-?\\d(.\\d+)?");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -126,7 +126,7 @@ public class Parser {
         }
         
         // * and /
-        pattern = Pattern.compile("(-{0,1}(\\d{1,}(\\.\\d{1,}){0,1})\\*-{0,1}(\\d{1,}(\\.\\d{1,}){0,1}))|(-{0,1}(\\d{1,}(\\.\\d{1,}){0,1})/-{0,1}(\\d{1,}(\\.\\d{1,}){0,1}))");
+        pattern = Pattern.compile("(-?\\d(.\\d+)?\\*-?\\d(.\\d+)?)|(-?\\d(.\\d+)?/-?\\d(.\\d+)?)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -149,7 +149,7 @@ public class Parser {
         }
         
         // + and -
-        pattern = Pattern.compile("(-{0,1}(\\d+(\\.\\d+){0,1})\\+-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})--{0,1}(\\d+(\\.\\d+){0,1}))");
+        pattern = Pattern.compile("(-?\\d(.\\d+)?\\+-?\\d(.\\d+)?)|(-?\\d(.\\d+)?--?\\d(.\\d+)?)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -173,7 +173,7 @@ public class Parser {
         }
         
         // ==, !=, <=, >=, <, >
-        pattern = Pattern.compile("(-{0,1}(\\d+(\\.\\d+){0,1})!=-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})==-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})>=-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})<=-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})>-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})<-{0,1}(\\d+(\\.\\d+){0,1}))");
+        pattern = Pattern.compile("(-?\\d(.\\d+)?!=-?\\d(.\\d+)?)|(-?\\d(.\\d+)?==-?\\d(.\\d+)?)|(-?\\d(.\\d+)?>=-?\\d(.\\d+)?)|(-?\\d(.\\d+)?<=-?\\d(.\\d+)?)|(-?\\d(.\\d+)?>-?\\d(.\\d+)?)|(-?\\d(.\\d+)?<-?\\d(.\\d+)?)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -215,7 +215,7 @@ public class Parser {
         }
         
         // && and ||
-        pattern = Pattern.compile("(-{0,1}(\\d+(\\.\\d+){0,1})\\|\\|-{0,1}(\\d+(\\.\\d+){0,1}))|(-{0,1}(\\d+(\\.\\d+){0,1})&&-{0,1}(\\d+(\\.\\d+){0,1}))");
+        pattern = Pattern.compile("(-?(\\d+(\\.\\d+)?)\\|\\|-?\\d(.\\d+)?)|(-?\\d(.\\d+)?&&-?\\d(.\\d+)?)");
         matcher = pattern.matcher(expression);
         while(matcher.find()){
             
@@ -238,6 +238,18 @@ public class Parser {
         }
         
         return Double.valueOf(expression);
+    }
+
+    
+    public static Double eval(String expression, List<Variable> definedVariables) throws NumberFormatException{
+        for(int i=0; i<definedVariables.size(); i++){
+            if(definedVariables.get(i) instanceof VariableString){
+                throw new NumberFormatException("Can't operate String.");
+            }
+            expression = expression.replace(definedVariables.get(i).getName(), definedVariables.get(i).getValue().toString());
+        }
+
+        return eval(expression);
     }
     
     /**
