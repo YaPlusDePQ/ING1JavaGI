@@ -9,7 +9,7 @@ import java.util.List;
 /**
 * Class that make the structure of any command
 */
-public class Command {
+public interface Command {
 
     /**
     * execute the command
@@ -17,7 +17,6 @@ public class Command {
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
-        return;
-    };
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument;
+
 }

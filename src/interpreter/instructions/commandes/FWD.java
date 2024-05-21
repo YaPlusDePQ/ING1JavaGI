@@ -19,7 +19,7 @@ import interpreter.Exceptions.SyntaxError;
 * or percentage of the largest dimension of the drawing area. In
 * in both cases the value is a real value.
 */
-public class FWD extends Command{
+public class FWD implements Command{
     
     /**
     * execute the command
@@ -27,7 +27,7 @@ public class FWD extends Command{
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
         
         if(args.size() != 1){
             throw new SyntaxError("Need 1 argument");

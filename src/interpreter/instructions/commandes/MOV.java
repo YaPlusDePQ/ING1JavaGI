@@ -16,7 +16,7 @@ import interpreter.Exceptions.SyntaxError;
 /**
  *  moves the cursor relatively (in pixels or %).
 */
-public class MOV extends Command{
+public class MOV implements Command{
   
     /**
     * execute the command
@@ -24,7 +24,7 @@ public class MOV extends Command{
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
        if(args.size() != 2){
             throw new SyntaxError("Need 2 arguments");

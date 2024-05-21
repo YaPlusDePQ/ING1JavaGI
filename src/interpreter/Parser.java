@@ -95,6 +95,13 @@ public class Parser {
     * @return resultat en Double
     */
     public static Double eval(String expression) throws NumberFormatException{
+
+        if(expression == null){
+            return 0.0;
+        }
+
+        expression = expression.replaceAll(" *", "");
+
         Double v1Buffer = 0.0;
         Double v2Buffer = 0.0;
         Pattern pattern;
@@ -113,7 +120,7 @@ public class Parser {
         }
         
         // ! operator
-        pattern = Pattern.compile("!-?\\d(.\\d+)?");
+        pattern = Pattern.compile("!-?\\d+(\\.\\d+)?");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -126,7 +133,7 @@ public class Parser {
         }
         
         // * and /
-        pattern = Pattern.compile("(-?\\d(.\\d+)?\\*-?\\d(.\\d+)?)|(-?\\d(.\\d+)?/-?\\d(.\\d+)?)");
+        pattern = Pattern.compile("(-?\\d+(\\.\\d+)?\\*-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?/-?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -149,7 +156,7 @@ public class Parser {
         }
         
         // + and -
-        pattern = Pattern.compile("(-?\\d(.\\d+)?\\+-?\\d(.\\d+)?)|(-?\\d(.\\d+)?--?\\d(.\\d+)?)");
+        pattern = Pattern.compile("(-?\\d+(\\.\\d+)?\\+-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?--?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -173,7 +180,7 @@ public class Parser {
         }
         
         // ==, !=, <=, >=, <, >
-        pattern = Pattern.compile("(-?\\d(.\\d+)?!=-?\\d(.\\d+)?)|(-?\\d(.\\d+)?==-?\\d(.\\d+)?)|(-?\\d(.\\d+)?>=-?\\d(.\\d+)?)|(-?\\d(.\\d+)?<=-?\\d(.\\d+)?)|(-?\\d(.\\d+)?>-?\\d(.\\d+)?)|(-?\\d(.\\d+)?<-?\\d(.\\d+)?)");
+        pattern = Pattern.compile("(-?\\d+(\\.\\d+)?!=-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?==-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?>=-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?<=-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?>-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?<-?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
@@ -215,7 +222,7 @@ public class Parser {
         }
         
         // && and ||
-        pattern = Pattern.compile("(-?(\\d+(\\.\\d+)?)\\|\\|-?\\d(.\\d+)?)|(-?\\d(.\\d+)?&&-?\\d(.\\d+)?)");
+        pattern = Pattern.compile("(-?(\\d+(\\.\\d+)?)\\|\\|-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?&&-?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         while(matcher.find()){
             
@@ -242,11 +249,37 @@ public class Parser {
 
     
     public static Double eval(String expression, List<Variable> definedVariables) throws NumberFormatException{
-        for(int i=0; i<definedVariables.size(); i++){
-            if(definedVariables.get(i) instanceof VariableString){
-                throw new NumberFormatException("Can't operate String.");
+        if(expression == null){
+            return 0.0;
+        }
+        
+        Matcher variableMatcher;
+        variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(expression);
+        int indexOfVariable = 0;
+        while (variableMatcher.find()) {
+            
+            if(variableMatcher.group(0).matches("true|false")){
+                continue;
             }
-            expression = expression.replace(definedVariables.get(i).getName(), definedVariables.get(i).getValue().toString());
+
+            if( definedVariables.contains( new Variable(variableMatcher.group(0)))){
+                
+                indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0)));
+                
+
+                if(definedVariables.get(indexOfVariable) instanceof VariableString){
+                    throw new NumberFormatException("Evaluation on String is prohibited");
+                }
+                
+                expression = expression.replaceFirst(definedVariables.get(indexOfVariable).getName(), definedVariables.get(indexOfVariable).getValue().toString());
+                
+            }
+            else{
+                throw new NumberFormatException("Unknown variable: '"+variableMatcher.group(0)+"'");
+            }
+
+            variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(expression);
+
         }
 
         return eval(expression);

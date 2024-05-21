@@ -8,14 +8,14 @@ import interpreter.Exceptions.InvalidArgument;
 import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.Variable;
 
-public class HIDE extends Command{
+public class HIDE implements Command{
     /**
     * execute the command
     *
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         if(args.size() != 0){
             throw new SyntaxError("Need 0 argument");

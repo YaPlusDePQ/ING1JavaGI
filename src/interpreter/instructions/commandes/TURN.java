@@ -14,7 +14,7 @@ import interpreter.Exceptions.SyntaxError;
 /**
  * rotates the cursor relatively expressed in degrees.
  */
-public class TURN extends Command{
+public class TURN implements Command{
     
     /**
     * execute the command
@@ -22,7 +22,7 @@ public class TURN extends Command{
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args)  throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args)  throws SyntaxError,InvalidArgument{
 
         if(args.size() != 1){
             throw new SyntaxError("Need 1 argument");

@@ -16,7 +16,7 @@ import interpreter.Exceptions.SyntaxError;
 /**
  * determines the color of the next plot in web format with 6 hexadecimal characters.
  */
-public class COLOR extends Command{
+public class COLOR implements Command{
     
     /**
     * execute the command
@@ -24,7 +24,7 @@ public class COLOR extends Command{
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError, InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError, InvalidArgument{
                 
         double valueRed = 0;
         double valueGreen = 0;

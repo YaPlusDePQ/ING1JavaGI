@@ -14,9 +14,9 @@ import interpreter.variables.VariableNumber;
 /**
  * Draw a cricle from the cursor on the screen.
  */
-public class CIRCLE extends Command{
+public class CIRCLE implements Command{
     
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         if(args.size() != 2){
             throw new SyntaxError("Need 2 arguments");

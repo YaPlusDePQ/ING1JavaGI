@@ -21,7 +21,7 @@ import interpreter.Exceptions.SyntaxError;
 * drawn, 100% the color is opaque. Any value in between draws the
 * form with transparency proportional to the value.
 */
-public class PRESS extends Command{
+public class PRESS implements Command{
     
     /**
     * execute the command
@@ -29,7 +29,7 @@ public class PRESS extends Command{
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
         
         if(args.size() != 1){
             throw new SyntaxError("Need 1 argument");
