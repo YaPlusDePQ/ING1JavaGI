@@ -92,7 +92,7 @@ public class LOOKAT implements Command{
                         }
                         else{
                             angle = 180+((Math.acos(tempX/modul))/Math.PI)*180;
-                        cursors.get(i).setDirection(cursors.get(i).getDirection()+angle);
+                        cursors.get(i).turn(angle);
                         }
                     }
                 }

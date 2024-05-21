@@ -10,11 +10,17 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 /**
 * Class creating a interpreter for the drawing langage.
 */
 public class Interpreter {
+
+    public final static int END_OF_SCRIPT = 0;
+    public final static int INSTRUCTION_EXECUTED = 1;
+    public final static int INSTRUCTION_SKIPED = 2;
+    public final static int PROCESSE_DONE = 2;
     
     private DrawingTab parentTab; //DrawingTab where the Interpreter must execute on
     private List<String> parsedIntruction; //List of all the instructions
@@ -26,7 +32,7 @@ public class Interpreter {
     // private String PATH_TO_MEMORY = "interpreter.instructions.memory.";
     
     private Interpreter subFlow = null; //Store a interpretor that will execute code from a sub local space (loop, if, ect..)
-    private String loopCondition = null;
+    public Function <Interpreter,Integer> onEndOfSCript = null;
     
     /**
     * Constructor
@@ -65,6 +71,10 @@ public class Interpreter {
         return this.index;
     }
 
+    public void setIndex(int newIndex){
+        this.index = newIndex;
+    }
+
     /**
     * Get all the variables already defined
     *
@@ -94,11 +104,6 @@ public class Interpreter {
             this.parsedIntruction.add(instructions.get(i));
         }
     }
-
-    public void setLoopCondition(String condition){
-        this.loopCondition = condition;
-    }
-
     
     /**
     * Execute the next instruction
@@ -111,21 +116,22 @@ public class Interpreter {
 
         //test if finished
         if(this.index >= this.parsedIntruction.size()){
-            if(Parser.eval(loopCondition, variables) != 0){
-                this.index = 0;
+            if(this.onEndOfSCript != null){
+                return onEndOfSCript.apply(this);
             }
             else{
                 System.out.println("[Interpreter] No instruction remaining");
-                return 0;
+                return END_OF_SCRIPT;
             }
         }
         
         //test if currently in a sub local space
         if(this.subFlow != null){
             System.out.println("[Interpreter] Running subFlow ...");
+            int resultCode = this.subFlow.runNextInstruction();
 
-            if(this.subFlow.runNextInstruction() != 0){ 
-                return 1;
+            if(resultCode != 0){ 
+                return resultCode;
             }
             else{
                 //if sub local space finished if finished
@@ -163,7 +169,7 @@ public class Interpreter {
         }
         
         this.index++;
-        return 1;
+        return INSTRUCTION_EXECUTED;
     }
 
 

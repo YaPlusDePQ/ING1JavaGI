@@ -43,7 +43,8 @@ public class TURN implements Command{
         //turn each active cursors by the value
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
-                cursors.get(i).setDirection(cursors.get(i).getDirection()+finalValue);
+                cursors.get(i).turn(finalValue);
+                System.out.println(cursors.get(i).getDirection());
             }
         }
         

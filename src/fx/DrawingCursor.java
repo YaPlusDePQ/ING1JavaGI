@@ -9,6 +9,10 @@ import javafx.scene.paint.Color;
 * 
 */
 public class DrawingCursor {
+    public final static int NONE = 0;
+    public final static int MIRRORED_AXIS = 1;
+    public final static int MIRRORED_POINT = 2;
+
     private int id; 
     private double currentX; 
     private double currentY;
@@ -20,7 +24,8 @@ public class DrawingCursor {
     private double thickness;
     private boolean active;
     private boolean visible;
-    // private boolean origin; 
+    private int directionModificator = NONE;
+    private double[] directionModificatorPoint = null;
     
     /**
     * Constructor
@@ -180,29 +185,6 @@ public class DrawingCursor {
     public boolean isVisible(){
         return this.visible;
     }
-
-    
-    /**
-    * Set the current X position
-    *
-    * @param  newX absolute position on the X axis
-    */
-    public void setX(double newX){
-        this.oldX = this.currentX;
-        this.oldY = this.currentY;
-        this.currentX = newX;
-    }
-    
-    /**
-    * Set the current Y position
-    *
-    * @param  newY absolute position on the Y axis
-    */
-    public void setY(double newY){
-        this.oldX = this.currentX;
-        this.oldY = this.currentY;
-        this.currentY = newY;
-    }
     
     /**
     * Set the current X and Y position
@@ -233,10 +215,24 @@ public class DrawingCursor {
     /**
     * Set the current direction
     *
-    * @param  newDirection direction in degrees
+    * @param  changeInDirection direction in degrees
     */
-    public void setDirection(double newDirection){
-        this.direction = Math.toRadians(newDirection);
+    public void turn(double changeInDirection){
+        switch (this.directionModificator) {
+            case MIRRORED_AXIS:
+                double m = (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0 ? Math.PI : Math.atan( (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) );
+                double originalAngle = ( -Math.toDegrees(this.direction) + 2*Math.toDegrees(m) ) + changeInDirection;
+                this.direction = Math.toRadians(2*Math.toDegrees(m)-originalAngle);
+                break;
+            case MIRRORED_POINT:
+                this.direction -= Math.toRadians(changeInDirection);
+                break;
+            case NONE:
+            default:
+                this.direction += Math.toRadians(changeInDirection);
+                break;
+        }
+        
     }
     
     /**
