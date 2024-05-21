@@ -26,6 +26,7 @@ public class Interpreter {
     // private String PATH_TO_MEMORY = "interpreter.instructions.memory.";
     
     private Interpreter subFlow = null; //Store a interpretor that will execute code from a sub local space (loop, if, ect..)
+    private String loopCondition = null;
     
     /**
     * Constructor
@@ -72,49 +73,59 @@ public class Interpreter {
     public List<Variable> getVariables(){
         return this.variables;
     }
-    
-    /**
-    * Reinitialize the interpretor with a new set of instruction
-    *
-    * @param  instructions  String of all the instruction
-    */
-    public void reinitialize(String instructions){
+
+    public void setIntruction(String instructions){
         this.parsedIntruction = Parser.getInstruction(instructions);
-        this.index = 0;
-        this.variables = new ArrayList<Variable>();
+    }
+
+    public void setIntruction(List<String> instructions){
+        this.parsedIntruction = instructions;
+    }
+
+    public void addInstruction(String instructions){
+        List<String> pI = Parser.getInstruction(instructions);
+        for(int i=0; i<pI.size(); i++){
+            this.parsedIntruction.add(pI.get(i));
+        }
     }
     
-    /**
-    * Reinitialize the interpretor with a new set of instruction
-    *
-    * @param  instructions  String of all the instruction
-    * @param  defaultDefinedVariables  List of already defined variables
-    */
-    public void reinitialize(String instructions, List<Variable> defaultDefinedVariables){
-        this.parsedIntruction = Parser.getInstruction(instructions);
-        this.index = 0;
-        this.variables = new ArrayList<Variable>(defaultDefinedVariables);
+    public void addInstruction(List<String> instructions){
+        for(int i=0; i<instructions.size(); i++){
+            this.parsedIntruction.add(instructions.get(i));
+        }
     }
+
+    public void setLoopCondition(String condition){
+        this.loopCondition = condition;
+    }
+
     
     /**
     * Execute the next instruction
     *
     * @return true if an instruction has been executed, false otherwise
     */
-    public boolean runNextInstruction() throws SyntaxError, InvalidArgument{
+    public int runNextInstruction() throws SyntaxError, InvalidArgument{
+
+        
 
         //test if finished
         if(this.index >= this.parsedIntruction.size()){
-            System.out.println("[Interpreter] No instruction remaining");
-            return false;
+            if(Parser.eval(loopCondition, variables) != 0){
+                this.index = 0;
+            }
+            else{
+                System.out.println("[Interpreter] No instruction remaining");
+                return 0;
+            }
         }
         
         //test if currently in a sub local space
         if(this.subFlow != null){
             System.out.println("[Interpreter] Running subFlow ...");
 
-            if(this.subFlow.runNextInstruction()){ 
-                return true;
+            if(this.subFlow.runNextInstruction() != 0){ 
+                return 1;
             }
             else{
                 //if sub local space finished if finished
@@ -124,7 +135,12 @@ public class Interpreter {
             }
         }
         
-        // Exctracting instruction structure
+        // skip non instruction
+        if(!this.parsedIntruction.get(index).matches("[A-Z]+.*")){
+            this.index++;
+            return 2;
+        }
+
         String currentInstruction = Parser.cleanUpInstruction(this.parsedIntruction.get(index));
         System.out.println(String.format("[Interpreter] Instruction: '%s'", currentInstruction));
 
@@ -147,7 +163,7 @@ public class Interpreter {
         }
         
         this.index++;
-        return true;
+        return 1;
     }
 
 
@@ -165,9 +181,9 @@ public class Interpreter {
             //get the methode execute from the command sub class
             Method m = commandClass.getMethod("execute", DrawingTab.class, List.class );
             //run
-            m.invoke(null, this.parentTab, finalArguments); 
+            m.invoke(commandClass.newInstance(), this.parentTab, finalArguments); 
         }
-        catch(NoSuchMethodException | IllegalAccessException | IllegalArgumentException e){
+        catch(NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InstantiationException e){
             //unknow error while accessing/trying to running the methode
             throw new SyntaxError("Command exist but cannot be access");
         }
@@ -190,8 +206,14 @@ public class Interpreter {
     /**
     * Run all instructions
     */
-    public void runAllInstructions() throws SyntaxError,InvalidArgument{
-        while(this.runNextInstruction());
+    public void runAllInstructions(long millis) throws SyntaxError,InvalidArgument,InterruptedException{
+        int run = 1;
+        while(run != 0){
+            run = this.runNextInstruction();
+            if(run == 1){
+                Thread.sleep(millis);
+            }
+        }
     }
     
     public String toString(){

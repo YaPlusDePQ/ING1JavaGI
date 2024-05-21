@@ -15,7 +15,7 @@ import interpreter.Exceptions.SyntaxError;
 /**
  * permet de définir l’épaisseur d’un trait avant de déplacer le curseur.
  */
-public class THICK extends Command{
+public class THICK implements Command{
 
     /**
     * execute the command
@@ -23,7 +23,7 @@ public class THICK extends Command{
     * @param  tab DrawingTab object to execute the command in
     * @param  args list of arguments send to the command
     */
-    public static void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
+    public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         if(args.size() != 1){
             throw new SyntaxError("Need 1 argument");

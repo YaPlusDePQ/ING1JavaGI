@@ -72,7 +72,7 @@ public class Variable {
         Variable c = (Variable) o;
         
         // Compare the data members and return accordingly 
-        return c.getName() == this.getName();
+        return c.getName().equals(this.getName());
     }
     
     @Override
