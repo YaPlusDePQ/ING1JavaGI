@@ -77,9 +77,6 @@ public class POS implements Command{
         if(cursors.get(i).isActive()){
             cursors.get(i).setXY(valueX, valueY);
         }
-        
-        tab.drawLine();
-
     }
     }
 }

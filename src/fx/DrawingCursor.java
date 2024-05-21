@@ -234,6 +234,11 @@ public class DrawingCursor {
         }
         
     }
+
+    
+    public void setDirection(double newDirection){
+        this.direction = newDirection;
+    }
     
     /**
     * Set the color that will be use to draw. 

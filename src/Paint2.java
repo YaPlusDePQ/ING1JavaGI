@@ -49,7 +49,7 @@ public class Paint2 extends Application{
             public void handle(ActionEvent e){ 
                 Thread thread = new Thread(()->{
                     try{
-                        test.runAllInstructions(100);
+                        test.runAllInstructions(10);
                         
                     }catch (Exception f){
                         System.out.println("\u001B[41m"+f+"\u001B[0m");
