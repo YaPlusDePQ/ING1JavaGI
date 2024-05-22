@@ -222,32 +222,32 @@ public class Parser {
             if(subEvalBuffer.split("==").length == 2){
                 v1Buffer = Double.valueOf(subEvalBuffer.split("==")[0]);
                 v2Buffer = Double.valueOf(subEvalBuffer.split("==")[1]);
-                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer==v2Buffer ? 1.0 : 0.0)).toString());
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer.doubleValue()==v2Buffer.doubleValue() ? 1.0 : 0.0)).toString());
             }
             else if(subEvalBuffer.split("!=").length == 2){
                 v1Buffer = Double.valueOf(subEvalBuffer.split("!=")[0]);
                 v2Buffer = Double.valueOf(subEvalBuffer.split("!=")[1]);
-                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer!=v2Buffer ? 1.0 : 0.0)).toString());
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer.doubleValue()!=v2Buffer.doubleValue() ? 1.0 : 0.0)).toString());
             }
             else if(subEvalBuffer.split(">=").length == 2){
                 v1Buffer = Double.valueOf(subEvalBuffer.split(">=")[0]);
                 v2Buffer = Double.valueOf(subEvalBuffer.split(">=")[1]);
-                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer>=v2Buffer ? 1.0 : 0.0)).toString());
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer.doubleValue()>=v2Buffer.doubleValue() ? 1.0 : 0.0)).toString());
             }
             else if(subEvalBuffer.split("<=").length == 2){
                 v1Buffer = Double.valueOf(subEvalBuffer.split("<=")[0]);
                 v2Buffer = Double.valueOf(subEvalBuffer.split("<=")[1]);
-                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer<=v2Buffer ? 1.0 : 0.0)).toString());
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer.doubleValue()<=v2Buffer.doubleValue() ? 1.0 : 0.0)).toString());
             }
             else if(subEvalBuffer.split(">").length == 2){
                 v1Buffer = Double.valueOf(subEvalBuffer.split(">")[0]);
                 v2Buffer = Double.valueOf(subEvalBuffer.split(">")[1]);
-                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer>v2Buffer ? 1.0 : 0.0)).toString());
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer.doubleValue()>v2Buffer.doubleValue() ? 1.0 : 0.0)).toString());
             }
             else {
                 v1Buffer = Double.valueOf(subEvalBuffer.split("<")[0]);
                 v2Buffer = Double.valueOf(subEvalBuffer.split("<")[1]);
-                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer<v2Buffer ? 1.0 : 0.0)).toString());
+                expression = expression.replaceFirst(subEvalBuffer, ((Double)(v1Buffer.doubleValue()<v2Buffer.doubleValue() ? 1.0 : 0.0)).toString());
             }
             
             matcher = pattern.matcher(expression);

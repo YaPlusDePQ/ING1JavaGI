@@ -1,13 +1,17 @@
 POS 200,200
 SHOW
-NUM test = 0
-BOOL caca = true
+STR caca = "#FF00FF"
 TURN 45
-WHILE test < 4   {
+FOR test TO 4  {
     FWD 20
-    NUM test = test+1
+    IF test < 3{
+        COLOR test == 0,test == 1, test == 2
+    }
+    IF test >= 3{
+        COLOR caca
+    }
 
 }
-TURN 41 + test
-FWD 20+50*caca
+TURN 45
+FWD 20
 

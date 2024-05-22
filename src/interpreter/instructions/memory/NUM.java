@@ -11,7 +11,7 @@ import java.util.List;
 public class NUM implements Memory{
     public void execute(List<Variable> definedVariables, String name, String value) throws SyntaxError,InvalidArgument {
 
-        if( name.matches("true|false") || !name.matches("([A-Z]|[a-z])[A-Za-z0-9]*")){
+        if( name.matches("true|false|FROM|TO|STEP") || !name.matches("([A-Z]|[a-z])[A-Za-z0-9]*")){
             throw new InvalidArgument("Variables name ('"+name+"') must at least start with a letter (a-z) and not be a reserved word");
         }
 

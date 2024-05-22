@@ -10,7 +10,7 @@ import interpreter.variables.VariableString;
 public class STR implements Memory{
     public void execute(List<Variable> definedVariables, String name, String value) throws SyntaxError,InvalidArgument {
         
-        if( name.matches("true|false") || !name.matches("([A-Z]|[a-z])[A-Za-z0-9]*")){
+        if( name.matches("true|false|FROM|TO|STEP") || !name.matches("([A-Z]|[a-z])[A-Za-z0-9]*")){
             throw new InvalidArgument("Variables name ('"+name+"') must at least start with a letter (a-z) and not be a reserved word");
         }
         
@@ -18,20 +18,22 @@ public class STR implements Memory{
         VariableString var = null;
         Variable bufferCheckAvailability = new Variable(name);
         String parsedValue = "";
-        
+
         if(definedVariables.contains( new Variable(value))){
             parsedValue = definedVariables.get( definedVariables.indexOf(new Variable(value)) ).getValue().toString();
         }
         else{
             StringBuilder sb = new StringBuilder(value);
             //remove quotes
-            if(value.matches("(\"[^\"]*\"*[^\"]*\")|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*')|('[^']*'*[^']*'))")){
-                sb.deleteCharAt(value.length() - 1);
+
+            if(value.matches("((\"[^\"]*\"*[^\"]*\")|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*')|('[^']*'*[^']*'))")){
+                sb.deleteCharAt(sb.length() - 1);
                 sb.deleteCharAt(0);
             }
 
             parsedValue = sb.toString();
         }
+
         
         
         if(definedVariables.contains(bufferCheckAvailability)){

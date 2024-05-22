@@ -63,6 +63,13 @@ public class Interpreter {
         this.variables = new ArrayList<Variable>(defaultDefinedVariables);
         this.subFlow = null;
     }
+
+    public void reset(){
+        this.index = 0;
+        this.variables.clear();
+        this.subFlow = null;
+        this.parentTab.getAllDrawingCursor().clear();
+    }
     
     /**
     * Get the index at wish the interpretor is currently at
@@ -109,7 +116,7 @@ public class Interpreter {
         
         //test if currently in a sub local space
         if(this.subFlow != null){
-            System.out.println("[Interpreter] Running subFlow ...");
+            //System.out.println("[Interpreter] Running subFlow ...");
             int resultCode = this.subFlow.runNextInstruction();
             if(resultCode != END_OF_SCRIPT){ 
                 return resultCode;

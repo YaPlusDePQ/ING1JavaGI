@@ -285,6 +285,24 @@ public class DrawingCursor {
     public void setVisible(boolean status){
         this.visible = status;
     }
+
+    public void linkToOtherCursor(int modificator, DrawingCursor targetCursor, double[] referringPoint){
+        this.directionModificator = modificator;
+        this.directionModificatorPoint = referringPoint;
+        switch (modificator) {
+            case MIRRORED_AXIS:
+                double m = (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0 ? Math.PI : Math.atan( (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) );
+                this.direction = Math.toRadians(2*Math.toDegrees(m)-targetCursor.getDirection());
+                setXY(targetCursor.getCurrentX()*Math.cos(m) + targetCursor.getCurrentY()*Math.sin(m), (-targetCursor.getCurrentX())*Math.sin(m) + targetCursor.getCurrentY()*Math.cos(m));
+                break;
+            case MIRRORED_POINT:
+                this.direction = -targetCursor.getDirection();
+                setXY(2*this.directionModificatorPoint[0]-targetCursor.getCurrentX(), 2*this.directionModificatorPoint[1] - targetCursor.getCurrentY());
+                break;
+            default:
+                break;
+        }
+    }
     
     @Override
     public String toString(){
