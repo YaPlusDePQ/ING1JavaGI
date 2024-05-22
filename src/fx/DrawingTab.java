@@ -6,7 +6,6 @@ import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.*;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -39,13 +38,15 @@ public class DrawingTab extends Group{
         this.mainCanvasGC = this.mainCanvas.getGraphicsContext2D();
         this.cursorCanvasGC = this.cursorCanvas.getGraphicsContext2D();
         this.cursorsList = new ArrayList<DrawingCursor>();
-
+        this.mainCanvasGC.setFill(Color.WHITE);
+        this.mainCanvasGC.fillRect(0, 0, this.width, this.height);
         this.cursorsList.add(new DrawingCursor(0));
         this.setActiveCursor(0);
         //adding all the widget so they show up
         
         this.getChildren().add(this.mainCanvas);
         this.getChildren().add(this.cursorCanvas);
+        
     }
     
     /**
@@ -96,23 +97,22 @@ public class DrawingTab extends Group{
    
 
     public boolean isCanvasEmpty(){
-        WritableImage image = new WritableImage(932, 1430);
+        WritableImage image = new WritableImage(1430, 932);
         this.snapshot(null, image);
         int count = 0;
         
 
         PixelReader pixelReader = image.getPixelReader();
-        for (int i = 0; i<this.height; i++){
+        for (int i = 0; i<this.width; i++){
             
-            for(int j =0; j<this.width; j++){
+            for(int j = 0; j<this.height; j++){
                 if(pixelReader.getArgb(i, j) != Color.WHITE.hashCode()){
                     count++;
                 }
-                
             }
             
-            
         }
+        System.out.println(count);
         if (count == 0) {
             return false;  
         }else{

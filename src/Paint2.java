@@ -14,11 +14,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
 import java.awt.image.RenderedImage;
 import javafx.scene.paint.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.event.EventHandler; 
 import javafx.scene.Group; 
 import javafx.scene.Scene;   
+import javafx.scene.shape.*;
 
 import interpreter.Interpreter;
 import interpreter.Exceptions.SyntaxError;
@@ -35,7 +37,7 @@ public class Paint2 extends Application{
     @Override
     public void start(Stage stage){
         Group root = new Group();
-        Scene s = new Scene(root, 1860, 1000, Color.WHITE);
+        Scene s = new Scene(root, 1860, 1000, Color.GREY);
         DrawingTab t = new DrawingTab(1430,932);
         
         
@@ -43,6 +45,7 @@ public class Paint2 extends Application{
         
         Interpreter test = new Interpreter(t, "");
         List<String> inst = new ArrayList<String>();        
+
 
         //Text zone
         TextArea textCommand = new TextArea();
@@ -136,7 +139,7 @@ public class Paint2 extends Application{
                     
                 }
                 catch(SyntaxError ex){
-                    System.out.println(ex.getMessage());
+                    textTerminal.appendText("Terminal>"+ex.getMessage());
                 }
 
                 Thread thread = new Thread(()->{
@@ -145,7 +148,7 @@ public class Paint2 extends Application{
                         test.runAllInstructions(longFinalTime);
                         
                     }catch (Exception f){
-                        textTerminal.appendText(f.getMessage()+"\n");
+                        textTerminal.appendText("Terminal>"+f.getMessage()+"\n");
                     }
                 });
                 
@@ -189,7 +192,7 @@ public class Paint2 extends Application{
                         textCommand.appendText(input.nextLine()+"\n");
                     }
                 } catch (FileNotFoundException ex) {
-                    textTerminal.appendText(ex.getMessage()+"\n");
+                    textTerminal.appendText("Terminal>"+ex.getMessage()+"\n");
                 }
             } 
         }; 
@@ -203,7 +206,12 @@ public class Paint2 extends Application{
             public void handle(ActionEvent e){ 
                 Random r= new Random();
                 int random = r.nextInt(100);
-                File file = new File("Screen capture"+random+".png");
+                DirectoryChooser directory = new DirectoryChooser();
+                directory.setTitle("Choisissez un dossier");
+                File selectedDirectory = directory.showDialog(stage);
+                String fDirectory = selectedDirectory.getAbsolutePath();
+                fDirectory += File.separator;
+                File file = new File(fDirectory+"Screen shot"+random+".png");
                 if(file != null){
                     if (t.isCanvasEmpty()) {
                         try{
@@ -212,7 +220,7 @@ public class Paint2 extends Application{
                             RenderedImage imagef = SwingFXUtils.fromFXImage(image, null);
                             ImageIO.write(imagef, "png", file);
                         }catch(Exception f){
-                            textTerminal.appendText("Error saving image\n");
+                            textTerminal.appendText("Terminal>"+"Error saving image\n");
                         }
                     }
                 }
@@ -240,7 +248,7 @@ public class Paint2 extends Application{
                     
                 }
                 catch(SyntaxError ex){
-                    System.out.println(ex.getMessage());
+                    textTerminal.appendText("Terminal>"+ex.getMessage());
                 }
 
                 Thread thread = new Thread(()->{
@@ -249,7 +257,7 @@ public class Paint2 extends Application{
                         test.runNextInstruction();
                         
                     }catch (Exception f){
-                        textTerminal.appendText(f.getMessage()+"\n");
+                        textTerminal.appendText("Terminal>"+f.getMessage()+"\n");
                     }
                 });
                 
