@@ -14,9 +14,6 @@ import javafx.event.EventHandler;
 
 import interpreter.Interpreter;
 import interpreter.Exceptions.SyntaxError;
-import interpreter.variables.Variable;
-import interpreter.variables.VariableBoolean;
-import interpreter.variables.VariableNumber;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
