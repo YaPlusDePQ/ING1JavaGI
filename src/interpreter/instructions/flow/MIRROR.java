@@ -12,6 +12,7 @@ import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
+import java.util.Arrays;
 
 public class MIRROR implements Flow{
         public Interpreter execute(DrawingTab parent, String argument, List<String> instructions, List<Variable> definedVariables) throws SyntaxError,InvalidArgument{
@@ -44,7 +45,7 @@ public class MIRROR implements Flow{
             }
             i++;
         }
-        
+
 
         if(finalArguments.size() == 2){
             mirrorMode = DrawingCursor.MIRRORED_POINT;
@@ -53,21 +54,33 @@ public class MIRROR implements Flow{
             mirrorMode = DrawingCursor.MIRRORED_AXIS;
         }
 
-        
-        
+        List<DrawingCursor> cursors = parent.getAllDrawingCursor();
+        int cursorMax = cursors.size();
+        DrawingCursor buffer = null;
+        for(i=0; i<cursorMax; i++){
+            if(cursors.get(i).isActive()){
 
+                buffer = new DrawingCursor(cursors.get(i).getID(), cursors.get(i), true);
+                buffer.linkToOtherCursor(mirrorMode, cursors.get(i), coords);
+
+                duplicatedCursors.add(buffer);
+                parent.getAllDrawingCursor().add(buffer);
+            }
+        }
 
         Interpreter subFlow = new Interpreter(parent, "", definedVariables);
         subFlow.setIntruction(instructions);
         
         subFlow.onEndOfSCript = (self) -> {
-            if(Parser.eval(argument, self.getVariables()) != 0) {
-                self.setIndex(0);
-                return Interpreter.PROCESSE_DONE;
+            System.out.println(Arrays.toString( parent.getAllDrawingCursor().toArray()));
+
+            for(DrawingCursor duplicated : duplicatedCursors){
+                parent.getAllDrawingCursor().remove(duplicated);
             }
-            else{
-                return Interpreter.END_OF_SCRIPT;
-            }
+
+            System.out.println(Arrays.toString( parent.getAllDrawingCursor().toArray()));
+
+            return Interpreter.END_OF_SCRIPT;
         };
 
         return subFlow;

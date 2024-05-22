@@ -66,7 +66,7 @@ public class DrawingCursor {
         this.opacity = existingCursor.getOpacity();;
         this.thickness = existingCursor.getThickness();;
         this.active = active;
-        this.visible = true;
+        this.visible = existingCursor.isVisible();
     }
 
     /**
@@ -292,8 +292,39 @@ public class DrawingCursor {
         switch (modificator) {
             case MIRRORED_AXIS:
                 double m = (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0 ? Math.PI : Math.atan( (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) );
+                double x = targetCursor.getCurrentX();
+                double y = targetCursor.getCurrentY();
+
+                if(this.directionModificatorPoint[2] - this.directionModificatorPoint[0] != 0 && this.directionModificatorPoint[3] - this.directionModificatorPoint[1] != 0){
+                    double a = (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]);
+                    double b = this.directionModificatorPoint[1] - a*this.directionModificatorPoint[0];
+                    double xi = 0;
+                    double yi = 0;
+
+                    if(a == 1){
+                        xi = (y-b)/(a+(1/a));
+                        yi = a*xi+b;
+                        setXY(2*xi, 2*yi);
+                    }
+                    else if( a == -1){
+                        xi = (x+y)/Math.sqrt(2);
+                        yi = -((y-x)/Math.sqrt(2));
+                        setXY( (xi-yi)/Math.sqrt(2), (xi+yi)/Math.sqrt(2));
+                    }
+                    else{
+                        setXY(2*xi-x, 2*yi-y);
+                    }
+                }
+                else if(this.directionModificatorPoint[2] - this.directionModificatorPoint[0] == 0){
+                    setXY(2*this.directionModificatorPoint[0]-x, y);
+                }
+                else{
+                    setXY(x, 2*this.directionModificatorPoint[1]-y);
+                }
+                
                 this.direction = Math.toRadians(2*Math.toDegrees(m)-targetCursor.getDirection());
-                setXY(targetCursor.getCurrentX()*Math.cos(m) + targetCursor.getCurrentY()*Math.sin(m), (-targetCursor.getCurrentX())*Math.sin(m) + targetCursor.getCurrentY()*Math.cos(m));
+
+                System.out.println(this.currentX+"    "+this.currentY);
                 break;
             case MIRRORED_POINT:
                 this.direction = -targetCursor.getDirection();

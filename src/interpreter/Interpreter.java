@@ -70,6 +70,7 @@ public class Interpreter {
         this.subFlow = null;
         this.parentTab.getAllDrawingCursor().clear();
         this.parentTab.addCursor(0);
+        this.parentTab.setActiveCursor(0);
     }
     
     /**
