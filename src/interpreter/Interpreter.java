@@ -27,9 +27,9 @@ public class Interpreter {
     private int index; //current index in parsedIntruction
     private List<Variable> variables; //list of all the variables declared
     
-    private String PATH_TO_COMMAND = "interpreter.instructions.commandes.";
-    private String PATH_TO_FLOW = "interpreter.instructions.flow.";
-    private String PATH_TO_MEMORY = "interpreter.instructions.memory.";
+    private final String PATH_TO_COMMAND = "interpreter.instructions.commandes.";
+    private final String PATH_TO_FLOW = "interpreter.instructions.flow.";
+    private final String PATH_TO_MEMORY = "interpreter.instructions.memory.";
     
     private Interpreter subFlow = null; //Store a interpretor that will execute code from a sub local space (loop, if, ect..)
     public Function <Interpreter,Integer> onEndOfSCript = null;
