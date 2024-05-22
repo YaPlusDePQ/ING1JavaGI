@@ -12,7 +12,6 @@ import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
-import java.util.Arrays;
 
 public class MIRROR implements Flow{
         public Interpreter execute(DrawingTab parent, String argument, List<String> instructions, List<Variable> definedVariables) throws SyntaxError,InvalidArgument{
@@ -60,11 +59,16 @@ public class MIRROR implements Flow{
         for(i=0; i<cursorMax; i++){
             if(cursors.get(i).isActive()){
 
+                System.out.println(cursors.get(i));
+
                 buffer = new DrawingCursor(cursors.get(i).getID(), cursors.get(i), true);
                 buffer.linkToOtherCursor(mirrorMode, cursors.get(i), coords);
-
                 duplicatedCursors.add(buffer);
+
+                System.out.println(buffer);
+
                 parent.getAllDrawingCursor().add(buffer);
+                
             }
         }
 
@@ -72,13 +76,10 @@ public class MIRROR implements Flow{
         subFlow.setIntruction(instructions);
         
         subFlow.onEndOfSCript = (self) -> {
-            System.out.println(Arrays.toString( parent.getAllDrawingCursor().toArray()));
 
             for(DrawingCursor duplicated : duplicatedCursors){
                 parent.getAllDrawingCursor().remove(duplicated);
             }
-
-            System.out.println(Arrays.toString( parent.getAllDrawingCursor().toArray()));
 
             return Interpreter.END_OF_SCRIPT;
         };

@@ -220,9 +220,7 @@ public class DrawingCursor {
     public void turn(double changeInDirection){
         switch (this.directionModificator) {
             case MIRRORED_AXIS:
-                double m = (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0 ? Math.PI : Math.atan( (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) );
-                double originalAngle = ( -Math.toDegrees(this.direction) + 2*Math.toDegrees(m) ) + changeInDirection;
-                this.direction = Math.toRadians(2*Math.toDegrees(m)-originalAngle);
+                this.direction -= Math.toRadians(changeInDirection);
                 break;
             case MIRRORED_POINT:
                 this.direction += Math.toRadians(changeInDirection);
@@ -232,7 +230,7 @@ public class DrawingCursor {
                 this.direction += Math.toRadians(changeInDirection);
                 break;
         }
-        
+        System.out.println(this);
     }
 
     
@@ -291,9 +289,13 @@ public class DrawingCursor {
         this.directionModificatorPoint = referringPoint;
         switch (modificator) {
             case MIRRORED_AXIS:
-                double m = (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0 ? Math.PI : Math.atan( (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) );
-                if(m == 0){
-                    m  =Math.PI/2;
+
+                this.directionModificator = targetCursor.directionModificator == MIRRORED_AXIS ?  NONE : MIRRORED_AXIS;
+
+                double m = (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0 ? 0 : Math.atan( (this.directionModificatorPoint[3] - this.directionModificatorPoint[1]) / (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) );
+                
+                if(m == 0 && !( (this.directionModificatorPoint[2] - this.directionModificatorPoint[0]) == 0)){
+                    m = -Math.PI/2;
                 }
                 
                 double x = targetCursor.getCurrentX();
@@ -326,10 +328,7 @@ public class DrawingCursor {
                     setXY(x, 2*this.directionModificatorPoint[1]-y);
                 }
                 
-                this.direction = Math.toRadians(2*Math.toDegrees(m)-targetCursor.getDirection());
-
-                System.out.println(this.getDirection());
-                System.out.println(m);
+                this.direction = 2*m-Math.toRadians(targetCursor.getDirection());
                 break;
             case MIRRORED_POINT:
                 this.direction = Math.toRadians(targetCursor.getDirection())+Math.PI;
