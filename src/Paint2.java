@@ -13,6 +13,13 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler; 
 
 import interpreter.Interpreter;
+import interpreter.Exceptions.SyntaxError;
+import interpreter.variables.Variable;
+import interpreter.variables.VariableBoolean;
+import interpreter.variables.VariableNumber;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
 * Main of the application
@@ -20,7 +27,7 @@ import interpreter.Interpreter;
 public class Paint2 extends Application{
     
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage){
         Group root = new Group();
         Scene s = new Scene(root, 500, 500, Color.WHITE);
         DrawingTab t = new DrawingTab(500,500);
@@ -28,18 +35,28 @@ public class Paint2 extends Application{
         root.getChildren().add(t);
         
         Interpreter test = new Interpreter(t, "");
+        List<String> inst = new ArrayList<String>();
         
         try {
-            File myObj = new File("C:\\Users\\alexr\\OneDrive\\Documents\\programmation\\java\\ING1\\script.txt");
+            File myObj = new File("C:\\Users\\alexr\\OneDrive\\Documents\\programmation\\java\\ING1\\test.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                test.addInstruction(data);
+                inst.add(data);
             }
             myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+        }
+
+        System.out.println(Arrays.toString(inst.toArray()));
+        
+        try{
+            test.setIntruction(inst);
+        }
+        catch(SyntaxError e){
+            System.out.println(e.getMessage());
         }
         
         Button b = new Button("button"); 

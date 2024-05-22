@@ -1,0 +1,11 @@
+POS 200,200
+SHOW
+NUM test = 0
+TURN 45
+WHILE test < 4   {
+    FWD 20
+    NUM test = test+1
+}
+TURN 45
+FWD 20
+

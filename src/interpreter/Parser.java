@@ -36,8 +36,37 @@ public class Parser {
     public static Boolean isValide(String text){
         String[] line = text.split("\n");
         List<String> tmp = new ArrayList<String>(Arrays.asList(line));
-        long open = tmp.stream().filter(x->x.equals("{")).count();
-        long close = tmp.stream().filter(x->x.equals("}")).count();
+
+        long open = 0;
+        long close = 0;
+
+        for (String str : tmp) {
+            open += str.contains("{") ? 1 : 0;
+            close += str.contains("}") ? 1 : 0;
+        }
+
+        if (close == open){
+            return true;
+        }
+        else{
+            return false;
+        }
+    } 
+
+    /**
+    * Check if the source number of { match the one of }
+    *
+    * @param text source
+    * @return true if it match
+    */
+    public static Boolean isValide(List<String> text){
+        long open = 0;
+        long close = 0;
+
+        for (String str : text) {
+            open += str.contains("{") ? 1 : 0;
+            close += str.contains("}") ? 1 : 0;
+        }
         
         if (close == open){
             return true;
@@ -54,6 +83,8 @@ public class Parser {
     * @return cleaned up Instruction
     */
     public static String cleanUpInstruction(String text){
+
+        text = text.trim();
         
         if(text.matches("[A-Z]+")){
             return text+" ";
@@ -74,7 +105,7 @@ public class Parser {
         }
         
         //cleaning up phase
-        text = text.trim();
+        
         String[] parts = text.split(" ", 2);
         text = parts[0] + " " + parts[1].replaceAll(" ", "");
         
@@ -101,6 +132,8 @@ public class Parser {
         }
 
         expression = expression.replaceAll(" *", "");
+        expression = expression.replaceAll("true", "1");
+        expression = expression.replaceAll("false", "0");
 
         Double v1Buffer = 0.0;
         Double v2Buffer = 0.0;
@@ -257,7 +290,7 @@ public class Parser {
         variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(expression);
         int indexOfVariable = 0;
         while (variableMatcher.find()) {
-            
+
             if(variableMatcher.group(0).matches("true|false")){
                 continue;
             }
@@ -332,7 +365,7 @@ public class Parser {
             if(variableMatcher.group(0).matches("true|false")){
                 continue;
             }
-
+    
             if( definedVariables.contains( new Variable(variableMatcher.group(0)))){
                 
                 indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0)));
@@ -406,6 +439,31 @@ public class Parser {
     */
     public static double percentageToDouble(String pourcentage){
         return Double.valueOf(pourcentage.replace(" *", "").replace("%", "")).doubleValue()/100;
+    }
+
+    public static List<String> getFlowBlock(List<String> instructions, int startIndex){
+        List<String> flowInstruction = new ArrayList<String>();
+        int openedFlow = 0;
+        int i = startIndex;
+
+        do{
+            if(instructions.get(i).matches("[^\\{]*\\{")){
+                openedFlow++;
+            }
+            if(instructions.get(i).matches("[^\\}]*\\}")){
+                openedFlow--;
+            }
+            flowInstruction.add(instructions.get(i));
+            i++;
+        }while(openedFlow > 0);
+
+
+        String lastInstruction = new StringBuilder( flowInstruction.get(flowInstruction.size()-1) ).reverse().toString();
+        lastInstruction = lastInstruction.replaceFirst("\\}", "");
+        lastInstruction = new StringBuilder( lastInstruction ).reverse().toString();
+
+        flowInstruction.set(flowInstruction.size()-1, lastInstruction);
+        return flowInstruction;
     }
     
 }
