@@ -7,6 +7,9 @@ import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.*;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 /**
 * Group that store a tab for the application. Each DrawingTab is independant from each other and dont interract.
@@ -71,13 +74,60 @@ public class DrawingTab extends Group{
     public List<DrawingCursor> getAllDrawingCursor(){
         return this.cursorsList;
     }
+
+    /**
+    * Get the main canvas
+    *
+    * @return main canvas
+    */
+    public GraphicsContext getMainCanvas(){
+        return this.mainCanvasGC;
+    }
+
+    /**
+    * Get the cursor canvas
+    *
+    * @return cursor canvas
+    */
+    public GraphicsContext getCursorCanvas(){
+        return this.cursorCanvasGC;
+    }
     
+   
+
+    public boolean isCanvasEmpty(){
+        WritableImage image = new WritableImage(932, 1430);
+        this.snapshot(null, image);
+        int count = 0;
+        
+
+        PixelReader pixelReader = image.getPixelReader();
+        for (int i = 0; i<this.height; i++){
+            
+            for(int j =0; j<this.width; j++){
+                if(pixelReader.getArgb(i, j) != Color.WHITE.hashCode()){
+                    count++;
+                }
+                
+            }
+            
+            
+        }
+        if (count == 0) {
+            return false;  
+        }else{
+            return true;
+        }
+        
+    }
+
     /**
     * Get the DrawingCursor with the corresponding ID. 
     * In case of multiple match, it only return the first in the list. 
     *
     * @return cursor with the corresponding ID, or null if no match 
     */
+
     public DrawingCursor getDrawingCursor(int cursorID){
         for(DrawingCursor cursor : this.cursorsList){
             if(cursor.getID() == cursorID){
@@ -151,7 +201,7 @@ public class DrawingTab extends Group{
             return;
         }
         
-        for(int i=0; i<this.cursorsList.size(); i++){
+        for(int i=0; i<this.cursorsList.size() && this.cursorsList.size()>1; i++){
             if(this.cursorsList.get(i).getID() == cursorID){
                 if(this.cursorsList.get(i).isActive()){
                     setNewActive = true;
@@ -164,6 +214,8 @@ public class DrawingTab extends Group{
             this.setActiveCursor(this.cursorsList.get(0).getID());
         }
     }
+
+    
     
     /**
     * Configure the graphics context so that it correspond to the cursor specification
