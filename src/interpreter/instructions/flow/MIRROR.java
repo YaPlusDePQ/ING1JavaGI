@@ -19,6 +19,7 @@ public class MIRROR implements Flow{
         List<Variable> finalArguments = Parser.getValueFromArgument(argument, definedVariables);
         List<DrawingCursor> duplicatedCursors =  new ArrayList<DrawingCursor>();
         double[] coords = {0,0,0,0};
+        int mirrorMode = 0;
         
         if(finalArguments.size() != 2 && finalArguments.size() != 4){
             throw new SyntaxError("Need 2 or 4 arguments");
@@ -27,12 +28,12 @@ public class MIRROR implements Flow{
         int i=0;
         for(Variable arg : finalArguments){
             if( arg instanceof VariableString){
-                if( !((VariableString)args.get(1)).getValue().matches("([0-9]*\\.?[0-9]*) *%") ){ // check if its a %, if not throw an error
+                if( !((VariableString)arg).getValue().matches("([0-9]*\\.?[0-9]*) *%") ){ // check if its a %, if not throw an error
                     throw new InvalidArgument("Arguments must be pourcentages [String] or numbers [Integer/Double]");
                 }
                 
-                coords[i] = Parser.percentageToDouble((String)args.get(1).getValue()); //convert the value from a string to a number
-                coords[i] = tab.getWidth() > tab.getHeight() ? (coords[i])*tab.getWidth() : (coords[i])* tab.getHeight(); // it as to be a pourcentage of the biggest value between widht and height
+                coords[i] = Parser.percentageToDouble((String)arg.getValue()); //convert the value from a string to a number
+                coords[i] = parent.getWidth() > parent.getHeight() ? (coords[i])*parent.getWidth() : (coords[i])* parent.getHeight(); // it as to be a pourcentage of the biggest value between widht and height
                 
             }
             else if(arg instanceof VariableNumber) {
@@ -46,11 +47,13 @@ public class MIRROR implements Flow{
         
 
         if(finalArguments.size() == 2){
-            
+            mirrorMode = DrawingCursor.MIRRORED_POINT;
         }
         else if(finalArguments.size() == 4){
-            
+            mirrorMode = DrawingCursor.MIRRORED_AXIS;
         }
+
+        
         
 
 

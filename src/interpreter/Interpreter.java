@@ -314,6 +314,10 @@ public class Interpreter {
             }
         }
     }
+
+    public boolean isFinished(){
+        return this.index >= this.parsedIntruction.size();
+    }
     
     public String toString(){
         return String.format("[Interpreter] CONFIGURATION: parsedIntruction.size = %d", this.parsedIntruction.size());
