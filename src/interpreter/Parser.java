@@ -30,11 +30,11 @@ public class Parser {
     /**
     * Check if the source number of { match the one of }
     *
-    * @param text source
+    * @param instruction source
     * @return true if it match
     */
-    public static Boolean isValide(String text){
-        String[] line = text.split("\n");
+    public static Boolean isValide(String instruction){
+        String[] line = instruction.split("\n");
         List<String> tmp = new ArrayList<String>(Arrays.asList(line));
 
         long open = 0;
@@ -56,14 +56,14 @@ public class Parser {
     /**
     * Check if the source number of { match the one of }
     *
-    * @param text source
+    * @param parsedInstruction source
     * @return true if it match
     */
-    public static Boolean isValide(List<String> text){
+    public static Boolean isValide(List<String> parsedInstruction){
         long open = 0;
         long close = 0;
 
-        for (String str : text) {
+        for (String str : parsedInstruction) {
             open += str.contains("{") ? 1 : 0;
             close += str.contains("}") ? 1 : 0;
         }
@@ -79,75 +79,86 @@ public class Parser {
     /**
     * Clean up an instruction from excessive space while keeping the integrity of String inside
     *
-    * @param text Instruction
+    * @param instruction Instruction
     * @return cleaned up Instruction
     */
-    public static String cleanUpInstruction(String text){
+    public static String cleanUpInstruction(String instruction){
 
-        text = text.trim();
+        instruction = instruction.trim();
         
-        if(text.matches("[A-Z]+")){
-            return text+" ";
+        //add space to complete the instruction patern
+        if(instruction.matches("[A-Z]+")){
+            return instruction+" ";
         }
         
-        //match all existing string 
+        //match all existing expression of litteral string
         List<String> allMatches = new ArrayList<String>();
-        Matcher m = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))").matcher(text);
+        Matcher m = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))").matcher(instruction); //this regex can understant " inside " "
         while (m.find()) {
             allMatches.add(m.group());
         }
         
-        text = text.replace("§", "\\§");
-        //replace
+        //protection against trick from someone who want to break the code
+        instruction = instruction.replace("§", "\\§");
+        //replace all string by a tag to protected theire space from being remove
         for(int i=0; i<allMatches.size(); i++){
-            text = text.replaceFirst(allMatches.get(i), "§"+i+"§");
+            instruction = instruction.replaceFirst(allMatches.get(i), "§"+i+"§");
             
         }
         
-        //cleaning up phase
+        //remove excessive space
+        String[] parts = instruction.split(" ", 2);
+        instruction = parts[0] + " " + parts[1].replaceAll(" ", "");
         
-        String[] parts = text.split(" ", 2);
-        text = parts[0] + " " + parts[1].replaceAll(" ", "");
-        
-        //put original value back on
+
+        //put original String back on
         for(int i=0; i<allMatches.size(); i++){
-            text = text.replace("§"+i+"§", allMatches.get(i));
+            instruction = instruction.replace("§"+i+"§", allMatches.get(i));
         }
         
-        text = text.replace("\\§", "§");
-        return text;
+        //remove protection
+        instruction = instruction.replace("\\§", "§");
+        return instruction;
     }
     
     /**
     * Calculate a mathematique and/or boolean expression. (Must only containt number and operator)
     * List of all operator: +,-,*,/,==,!=,<=,>=,!,<,>,&&,||
-    *
-    * @param expression Instruction
-    * @return resultat en Double
+    * <p>
+    * PS: This function is extremely un optimised BUT is extremely resilient to incorrect syntax detection and always give the good result soooooo...
+    * @param expression
+    * @return resultat in Double
+    * @throws NumberFormatException something in the expression can't be calculated of the syntax is incorrect
     */
-    public static Double eval(String expression) throws NumberFormatException{
+    private static Double eval(String expression) throws NumberFormatException{
 
         if(expression == null){
             return 0.0;
         }
 
-        expression = expression.replaceAll(" *", "");
-        expression = expression.replaceAll("true", "1");
+        
+        expression = expression.replaceAll(" *", ""); //replace all sapce
+
+        //replace boolean by theyre numerical value
+        expression = expression.replaceAll("true", "1"); 
         expression = expression.replaceAll("false", "0");
 
-        Double v1Buffer = 0.0;
+        Double v1Buffer = 0.0; 
         Double v2Buffer = 0.0;
         Pattern pattern;
         Matcher matcher;
-        String subEvalBuffer;
+        String subEvalBuffer; //buffer that will store a simple calcul between 2 values
         
         
-        //bracket first
+        /*
+         * execute all the calcule inside bracket
+         */
         pattern = Pattern.compile("\\([^\\)\\(]*\\)");
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
             subEvalBuffer = matcher.group(0);
+            //replace the bracket in the expression by its value
             expression = expression.replaceFirst(subEvalBuffer.replace("(", "\\(").replace(")", "\\)").replace("*", "\\*").replace("+", "\\+"), Parser.eval(subEvalBuffer.substring(1, subEvalBuffer.length()-1)).toString());
             matcher = pattern.matcher(expression);
         }
@@ -165,17 +176,19 @@ public class Parser {
             matcher = pattern.matcher(expression);
         }
         
-        // * and /
-        pattern = Pattern.compile("(-?\\d+(\\.\\d+)?\\*-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?/-?\\d+(\\.\\d+)?)");
+        /*
+         * execute * and /
+         */
+        pattern = Pattern.compile("(-?\\d+(\\.\\d+)?\\*-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?/-?\\d+(\\.\\d+)?)"); //getting all calcul
         matcher = pattern.matcher(expression);
         
         while(matcher.find()){
-            subEvalBuffer = matcher.group(0);
+            subEvalBuffer = matcher.group(0); //get the calcule
             
             if(subEvalBuffer.split("\\*").length == 2){
-                v1Buffer = Double.valueOf(subEvalBuffer.split("\\*")[0]);
-                v2Buffer = Double.valueOf(subEvalBuffer.split("\\*")[1]);
-                expression = expression.replaceFirst(subEvalBuffer.replace("*", "\\*"), ((Double)(v1Buffer*v2Buffer)).toString());
+                v1Buffer = Double.valueOf(subEvalBuffer.split("\\*")[0]); //get value on the left side of the operator
+                v2Buffer = Double.valueOf(subEvalBuffer.split("\\*")[1]); //get value on the right side of the operator
+                expression = expression.replaceFirst(subEvalBuffer.replace("*", "\\*"), ((Double)(v1Buffer*v2Buffer)).toString()); //calulate adn replace the original calcul by its result
             }
             else{
                 v1Buffer = Double.valueOf(subEvalBuffer.split("/")[0]);
@@ -188,7 +201,9 @@ public class Parser {
             
         }
         
-        // + and -
+        /*
+         * execute + and -
+         */
         pattern = Pattern.compile("(-?\\d+(\\.\\d+)?\\+-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?--?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         
@@ -212,7 +227,9 @@ public class Parser {
             
         }
         
-        // ==, !=, <=, >=, <, >
+        /*
+         * execute ==, !=, <=, >=, <, >
+         */
         pattern = Pattern.compile("(-?\\d+(\\.\\d+)?!=-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?==-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?>=-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?<=-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?>-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?<-?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         
@@ -254,7 +271,9 @@ public class Parser {
             
         }
         
-        // && and ||
+        /*
+         * execute && and ||
+         */
         pattern = Pattern.compile("(-?(\\d+(\\.\\d+)?)\\|\\|-?\\d+(\\.\\d+)?)|(-?\\d+(\\.\\d+)?&&-?\\d+(\\.\\d+)?)");
         matcher = pattern.matcher(expression);
         while(matcher.find()){
@@ -280,7 +299,14 @@ public class Parser {
         return Double.valueOf(expression);
     }
 
-    
+    /**
+     * Calculate a mathematique and/or boolean expression.
+     * List of all operator: +,-,*,/,==,!=,<=,>=,!,<,>,&&,||
+     * @param expression
+     * @param definedVariables list of variable that can be inside the expression
+     * @return result
+     * @throws NumberFormatException something in the expression can't be calculated of the syntax is incorrect
+     */
     public static Double eval(String expression, List<Variable> definedVariables) throws NumberFormatException{
         if(expression == null){
             return 0.0;
@@ -289,21 +315,25 @@ public class Parser {
         Matcher variableMatcher;
         variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(expression);
         int indexOfVariable = 0;
+
+        //replace every variable by their respective value
         while (variableMatcher.find()) {
 
+            //ignore true and false
             if(variableMatcher.group(0).matches("true|false")){
                 continue;
             }
 
             if( definedVariables.contains( new Variable(variableMatcher.group(0)))){
                 
-                indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0)));
+                indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0))); 
                 
-
+                //no operation is permitted on string
                 if(definedVariables.get(indexOfVariable) instanceof VariableString){
                     throw new NumberFormatException("Evaluation on String is prohibited");
                 }
                 
+                //replace the var by its value
                 expression = expression.replaceFirst(definedVariables.get(indexOfVariable).getName(), definedVariables.get(indexOfVariable).getValue().toString());
                 
             }
@@ -319,35 +349,46 @@ public class Parser {
     }
     
     /**
-    * Get the values of arguments pass to a command
+    * Get the values of arguments pass to a command and encapsulated them inside Variable sub-class
     *
     * @param rawArguments argument as a String separated by a coma
     * @param definedVariables List of all variables that are defined
     * @return List of all the value passed stored inside Variable sub class of the right type
+    * @throws SyntaxError an argument can't be calculated of the syntax is incorrect
     */
     public static List<Variable> getValueFromArgument(String rawArguments, List<Variable> definedVariables) throws SyntaxError{
 
         
 
-        List<Variable> argumentList = new ArrayList<Variable>();
+        List<Variable> argumentList = new ArrayList<Variable>(); //list of all final arguments
 
+        //no argument
         if(rawArguments.length() == 0){
             return argumentList;
         }
+
         
-        List<String> allMatches = new ArrayList<String>();
-        
+
+        List<String> allMatches = new ArrayList<String>(); //store all the litteral strings
+
+        //protection against trick from someone who want to break the code
         rawArguments = rawArguments.replace("§", "\\§");
+        Matcher stringMatcher = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))|(#([a-fA-F0-9]{6}))|([0-9]*.?[0-9]*)%").matcher(rawArguments);
 
-        Matcher m = Pattern.compile("((\"[^\"]*\"*[^\"]*\" *,)|(\"[^\"]*\"*[^\"]*\"))|(('[^']*'*[^']*' *,)|('[^']*'*[^']*'))|(#([a-fA-F0-9]{6}))|([0-9]*.?[0-9]*)%").matcher(rawArguments);
-
-        while (m.find()) {
-            allMatches.add(m.group());
+        //match all existing expression of litteral string
+        while (stringMatcher.find()) {
+            allMatches.add(stringMatcher.group());
         }
         
-        //replace
+        /*
+         *  replace all string by so theyre values arent modified when variables while be replace by theyre value and
+         *  it doesnt interfer for when rawArguments whill be split at every , 
+         */
+       
         for(int i=0; i<allMatches.size(); i++){
+            
             if( allMatches.get(i).charAt( allMatches.get(i).length()-1 ) == ','){
+                //regex overflow on the , so it is added back and remove from the lietteral string
                 rawArguments = rawArguments.replaceFirst(allMatches.get(i), "§"+i+"§,");
                 allMatches.set(i, allMatches.get(i).substring(0, allMatches.get(i).length()-1));
             }
@@ -360,8 +401,11 @@ public class Parser {
         Matcher variableMatcher;
         variableMatcher = Pattern.compile("([A-Z]|[a-z])[A-Za-z0-9]*").matcher(rawArguments);
         int indexOfVariable = 0;
+
+        //replace every variable by their respective value
         while (variableMatcher.find()) {
             
+             //ignore true and false
             if(variableMatcher.group(0).matches("true|false")){
                 continue;
             }
@@ -370,9 +414,9 @@ public class Parser {
                 
                 indexOfVariable = definedVariables.indexOf(new Variable(variableMatcher.group(0)));
                 
-
+                
                 if(definedVariables.get(indexOfVariable) instanceof VariableString){
-                    
+                    //string value recieve the same traitemetn as litteral string
                     rawArguments = rawArguments.replaceFirst(definedVariables.get(indexOfVariable).getName(), "§"+allMatches.size()+"§");
                     allMatches.add("\""+((VariableString)definedVariables.get(indexOfVariable)).getValue()+"\"");
                 }
@@ -388,28 +432,29 @@ public class Parser {
 
         }
 
-        String[] rawArgumentsSplited = rawArguments.split(",");
+        String[] rawArgumentsSplited = rawArguments.split(","); //split at every , to get each argument separetly
 
         for(int i=0; i<rawArgumentsSplited.length; i++){
 
             
             if(rawArgumentsSplited[i].matches("-?\\d+(\\.\\d+)?")){
+                //store literal number
                 argumentList.add( new VariableNumber(Double.parseDouble(rawArgumentsSplited[i])) );
             }
-            //boolean
             else if(rawArgumentsSplited[i].matches("true|false")){
+                //store literal boolean
                 argumentList.add( new VariableBoolean(rawArgumentsSplited[i].equals("true")) );
             }
-            //string, hex and %
-            else if(rawArgumentsSplited[i].matches("§\\d+§")){ 
-                
-                
+            else if(rawArgumentsSplited[i].matches("§\\d+§")){  //String are still a tag
+                //store literal string
+
                 int value = Integer.valueOf(rawArgumentsSplited[i].substring(1, rawArgumentsSplited[i].length() - 1));
-                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("§"+value+"§", allMatches.get(value)).replace("\\§", "§");
+                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("§"+value+"§", allMatches.get(value)).replace("\\§", "§"); //get the actual value of the string from its tag
 
                 StringBuilder sb = new StringBuilder(rawArgumentsSplited[i]);
-                //remove quotes
+
                 if(!rawArgumentsSplited[i].matches("(#([a-fA-F0-9]{6}))|([0-9]*.?[0-9]*)%")){
+                    //remove quotes if needed
                     sb.deleteCharAt(rawArgumentsSplited[i].length() - 1);
                     sb.deleteCharAt(0);
                 }
@@ -417,7 +462,8 @@ public class Parser {
                 argumentList.add( new VariableString(sb.toString()));
             }
             else{
-                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("\\§", "§");
+                //if not literal value, compute the expresionn to get the value
+                rawArgumentsSplited[i] = rawArgumentsSplited[i].replace("\\§", "§"); //remove protection
                 try{
                     argumentList.add( new VariableNumber(Parser.eval(rawArgumentsSplited[i])) );
                 }
@@ -441,11 +487,18 @@ public class Parser {
         return Double.valueOf(pourcentage.replace(" *", "").replace("%", "")).doubleValue()/100;
     }
 
+    /**
+     * Get all instruction inside a block
+     * @param instructions list of all instructions
+     * @param startIndex current instruction index
+     * @return List of all instruction inside a block, this list containt the instruction that open the block
+     */
     public static List<String> getFlowBlock(List<String> instructions, int startIndex){
         List<String> flowInstruction = new ArrayList<String>();
         int openedFlow = 0;
         int i = startIndex;
 
+        //count opening bracket so that a blocks inside the main block are keept
         do{
             if(instructions.get(i).matches("[^\\{]*\\{")){
                 openedFlow++;
@@ -459,7 +512,7 @@ public class Parser {
 
 
         String lastInstruction = new StringBuilder( flowInstruction.get(flowInstruction.size()-1) ).reverse().toString();
-        lastInstruction = lastInstruction.replaceFirst("\\}", "");
+        lastInstruction = lastInstruction.replaceFirst("\\}", ""); //remove final closing bracket
         lastInstruction = new StringBuilder( lastInstruction ).reverse().toString();
 
         flowInstruction.set(flowInstruction.size()-1, lastInstruction);

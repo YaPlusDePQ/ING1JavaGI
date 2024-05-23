@@ -56,7 +56,6 @@ public class Variable {
     * Override equals to make to variable the same if the have the same name.
     * This must prevent the coexistance of tow variable with the same name but 
     * different type within the same list.
-    * @param  newValue new value
     *
     */
     @Override

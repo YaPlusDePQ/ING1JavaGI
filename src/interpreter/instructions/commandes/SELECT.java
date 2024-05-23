@@ -8,13 +8,11 @@ import interpreter.Exceptions.SyntaxError;
 import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 
+/**
+ * selects an existing cursor.
+ */
 public class SELECT implements Command{
-    /**
-    * execute the command
-    *
-    * @param  tab DrawingTab object to execute the command in
-    * @param  args list of arguments send to the command
-    */
+
     public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         if(args.size() != 1){
@@ -30,7 +28,6 @@ public class SELECT implements Command{
             throw new InvalidArgument("Argument must be 1 positive number [Integer]");
         }
 
-        // after getting the finalValue correctly
 
         if(finalValue < 0){
             throw new InvalidArgument("Argument must be 1 positive number [Integer]");

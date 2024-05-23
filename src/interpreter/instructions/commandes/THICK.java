@@ -13,16 +13,10 @@ import interpreter.Exceptions.SyntaxError;
 
 
 /**
- * permet de définir l’épaisseur d’un trait avant de déplacer le curseur.
+ * allows you to define the thickness of a line before moving the cursor.
  */
 public class THICK implements Command{
 
-    /**
-    * execute the command
-    *
-    * @param  tab DrawingTab object to execute the command in
-    * @param  args list of arguments send to the command
-    */
     public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
         if(args.size() != 1){
@@ -39,13 +33,12 @@ public class THICK implements Command{
             throw new InvalidArgument("Argument must be 1 positive number [Integer/Double]");
         }
 
-        // after getting the finalValue correctly
+
 
         if(finalValue < 0){
             throw new InvalidArgument("Argument must be 1 positive number [Integer/Double]");
         }
 
-        //apply change
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
                 cursors.get(i).setThickness(finalValue);

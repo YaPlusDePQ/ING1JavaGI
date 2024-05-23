@@ -21,12 +21,6 @@ import interpreter.Exceptions.SyntaxError;
 */
 public class BWD implements Command{
     
-    /**
-    * execute the command
-    *
-    * @param  tab DrawingTab object to execute the command in
-    * @param  args list of arguments send to the command
-    */
     public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
         
         if(args.size() != 1){
@@ -53,8 +47,6 @@ public class BWD implements Command{
         else{
             throw new InvalidArgument("Argument must be 1 pourcentage [String] or 1 number [Integer/Double]");
         } 
-        
-        // after getting the finalValue correctly
         
         List<DrawingCursor> cursors = tab.getAllDrawingCursor();
         

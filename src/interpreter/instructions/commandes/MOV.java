@@ -18,12 +18,6 @@ import interpreter.Exceptions.SyntaxError;
 */
 public class MOV implements Command{
   
-    /**
-    * execute the command
-    *
-    * @param  tab DrawingTab object to execute the command in
-    * @param  args list of arguments send to the command
-    */
     public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError,InvalidArgument{
 
        if(args.size() != 2){
@@ -33,6 +27,7 @@ public class MOV implements Command{
         double valueX = 0;
         double valueY = 0;
 
+        // getting the data for valueX
         if(args.get(0) instanceof VariableNumber && args.get(1) instanceof VariableNumber){ 
             valueX = ((VariableNumber)args.get(0)).getValue(); 
         }
@@ -50,6 +45,8 @@ public class MOV implements Command{
             throw new InvalidArgument("Arguments must be pourcentages [String] or numbers [Integer/Double]");
         }
         
+
+        // getting the data for valueY
         if(args.get(1) instanceof VariableNumber){ 
             valueY = ((VariableNumber)args.get(1)).getValue();
         }

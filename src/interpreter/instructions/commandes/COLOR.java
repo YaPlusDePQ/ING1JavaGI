@@ -18,12 +18,6 @@ import interpreter.Exceptions.SyntaxError;
  */
 public class COLOR implements Command{
     
-    /**
-    * execute the command
-    *
-    * @param  tab DrawingTab object to execute the command in
-    * @param  args list of arguments send to the command
-    */
     public void execute(DrawingTab tab, List<Variable> args) throws SyntaxError, InvalidArgument{
                 
         double valueRed = 0;
@@ -76,7 +70,7 @@ public class COLOR implements Command{
                 throw new InvalidArgument("Argument must be 3 numbers between 0 and 1 [Integer/Value] or 1 hexadecimal code (6 characters) [String]");
             }
 
-            //apply the change
+            //apply the change to all active cursor
             for(int i=0; i<cursors.size(); i++){
                 if(cursors.get(i).isActive()){
                     cursors.get(i).setColor(Color.web( ((VariableString)args.get(0)).getValue().replaceAll(" *", "") ));

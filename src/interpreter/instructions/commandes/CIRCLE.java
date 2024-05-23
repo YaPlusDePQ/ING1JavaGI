@@ -39,7 +39,6 @@ public class CIRCLE implements Command{
             throw new InvalidArgument("Argument must be 1 positive number [Integer/Double] and 1 Boolean [Boolean]");
         }
 
-        // after getting the finalValue correctly
 
         if(radius < 0){
             throw new InvalidArgument("Argument must be 1 positive number [Integer/Double] and 1 Boolean [Boolean]");
