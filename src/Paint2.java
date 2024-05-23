@@ -162,8 +162,10 @@ public class Paint2 extends Application{
         */
         EventHandler<ActionEvent> eventClear = new EventHandler<ActionEvent>() { 
             public void handle(ActionEvent e){ 
-                t.getMainCanvas().clearRect(0, 0, 1430 ,932);
+                t.getMainCanvasGC().clearRect(0, 0, 1430 ,932);
                 t.getCursorCanvas().clearRect(0, 0, 1430 ,932);
+                t.getMainCanvasGC().setFill(Color.WHITE);
+                t.getMainCanvasGC().fillRect(0, 0, 1430,932);
             } 
         }; 
 
@@ -203,23 +205,23 @@ public class Paint2 extends Application{
         */
         EventHandler<ActionEvent> eventScreen = new EventHandler<ActionEvent>() { 
             public void handle(ActionEvent e){ 
-                Random r= new Random();
-                int random = r.nextInt(100);
-                DirectoryChooser directory = new DirectoryChooser();
-                directory.setTitle("Choisissez un dossier");
-                File selectedDirectory = directory.showDialog(stage);
-                String fDirectory = selectedDirectory.getAbsolutePath();
-                fDirectory += File.separator;
-                File file = new File(fDirectory+"Screen shot"+random+".png");
-                if(file != null){
-                    if (t.isCanvasEmpty()) {
+                if (t.isCanvasEmpty()) {
+                    Random r= new Random();
+                    int random = r.nextInt(100);
+                    DirectoryChooser directory = new DirectoryChooser();
+                    directory.setTitle("Choisissez un dossier");
+                    File selectedDirectory = directory.showDialog(stage);
+                    String fDirectory = selectedDirectory.getAbsolutePath();
+                    fDirectory += File.separator;
+                    File file = new File(fDirectory+"Screen shot"+random+".png");
+                    if(file != null){
                         try{
                             WritableImage image = new WritableImage(1430, 932);
                             t.snapshot(null, image);
                             RenderedImage imagef = SwingFXUtils.fromFXImage(image, null);
                             ImageIO.write(imagef, "png", file);
                         }catch(Exception f){
-                            textTerminal.appendText("Terminal>"+"Error saving image\n");
+                        textTerminal.appendText("Terminal>"+"Error saving image\n");
                         }
                     }
                 }
