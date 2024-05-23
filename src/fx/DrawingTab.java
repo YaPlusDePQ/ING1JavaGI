@@ -94,31 +94,32 @@ public class DrawingTab extends Group{
         return this.cursorCanvasGC;
     }
     
-   
+    /*
+    * Check if the canvas is empty
+    *
+    * @return true if it's empty and false if it's not
+    */
 
     public boolean isCanvasEmpty(){
+        /*
+        * create an image form the Drawing tab and an pixel scanner 
+        */
         WritableImage image = new WritableImage(1430, 932);
         this.snapshot(null, image);
-        int count = 0;
-        
 
         PixelReader pixelReader = image.getPixelReader();
+        /*
+        * We scan all the pixel in the image and if we find a pixel that is differant than white we stop the code and return false
+        * It's the most optimised way to not hav to check all the pixel if it's not empty but if it is we have to check all the canvas
+        */
         for (int i = 0; i<this.width; i++){
-            
             for(int j = 0; j<this.height; j++){
                 if(pixelReader.getArgb(i, j) != Color.WHITE.hashCode()){
-                    count++;
+                    return false;
                 }
             }
-            
-        }
-        System.out.println(count);
-        if (count == 0) {
-            return false;  
-        }else{
-            return true;
-        }
-        
+        }  
+        return true;    
     }
 
     /**
