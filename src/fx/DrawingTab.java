@@ -81,7 +81,7 @@ public class DrawingTab extends Group{
     *
     * @return main canvas
     */
-    public GraphicsContext getMainCanvas(){
+    public GraphicsContext getMainCanvasGC(){
         return this.mainCanvasGC;
     }
 
