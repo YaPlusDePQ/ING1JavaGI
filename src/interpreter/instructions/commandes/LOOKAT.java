@@ -91,16 +91,11 @@ public class LOOKAT implements Command{
         //apply the change
         for(int i=0; i<cursors.size(); i++){
             if(cursors.get(i).isActive()){
-                tempX = valueX-(cursors.get(i).getCurrentX()); //locating the position X,Y in a new coordinate system with the current cursor as the origin 
-                tempY = valueY-(cursors.get(i).getCurrentY());  
-                modul = Math.sqrt(Math.pow(tempX,2) + (Math.pow(tempY,2))); //calculating the modul of the X,Y position 
-                if (tempY >= 0){ //tempX/modul still give two possible positions, we determine which one is correct with y value
-                    angle = ((Math.acos(tempX/modul))/Math.PI)*180;
-                }
-                else{
-                    angle = 180+((Math.acos(tempX/modul))/Math.PI)*180;
-                    cursors.get(i).setDirection(Math.toRadians(angle));
-                }
+                tempX = valueX - cursors.get(i).getCurrentX();
+                tempY = valueY - cursors.get(i).getCurrentY();
+                modul = Math.sqrt(tempX * tempX + tempY * tempY);
+                angle = Math.toDegrees(Math.atan2(tempY, tempX));
+                cursors.get(i).setDirection(Math.toRadians(angle));
             }
         }
     }
