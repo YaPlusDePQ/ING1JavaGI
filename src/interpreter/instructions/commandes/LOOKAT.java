@@ -11,9 +11,9 @@ import interpreter.variables.Variable;
 import interpreter.variables.VariableNumber;
 import interpreter.variables.VariableString;
 
-/*
-* 
-* Ya qu'une seule commande look at donc tu dois dasn cette classe determiner quoi faire en fonction des argumetn envoyé (exemple dans COLOR)
+
+/**
+* the current cursor look at a cursor or a position 
 */
 public class LOOKAT implements Command{
     
