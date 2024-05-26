@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"fx","l":"DrawingCursor"},{"p":"fx","l":"DrawingTab"},{"p":"interpreter","l":"Interpreter"},{"p":"<Unnamed>","l":"Paint2"},{"p":"interpreter","l":"Parser"}];updateSearchResults();
