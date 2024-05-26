@@ -94,7 +94,7 @@ public class LOOKAT implements Command{
                 tempX = valueX - cursors.get(i).getCurrentX(); //putting valueX in a new coordinate system with the current cursor as the origin
                 tempY = valueY - cursors.get(i).getCurrentY(); //putting valueY in a new coordinate system with the current cursor as the origin
                 modul = Math.sqrt(tempX * tempX + tempY * tempY);
-                angle = Math.toDegrees(Math.atan2(tempY, tempX)); //it is better to use arctan in order to consider the sign of x and y as arccos and arcsin can't handle every values
+                angle = Math.toDegrees(Math.atan2(tempX/modul, tempY/modul)); //it is better to use arctan in order to consider the sign of x and y as arccos and arcsin can't handle every values
                 cursors.get(i).setDirection(Math.toRadians(angle));
             }
         }
